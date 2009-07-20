@@ -1,0 +1,24 @@
+---
+name: App-Siesh
+version: 0.06
+author:
+  - 'Mario Domgoergen <mario@domgoergen.com>'
+abstract: Sieve Shell
+license: perl
+resources:
+  license: ~
+requires:
+  Config::Find: 0
+  File::Temp: 0
+  IO::Prompt: 0
+  IO::Socket::SSL: 0
+  Net::ManageSieve: 0
+  Term::ShellUI: 0
+provides:
+  Net::ManageSieve::Plus:
+    file: lib/Net/ManageSieve/Plus.pm
+    version: 0.05
+generated_by: Module::Build version 0.32
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

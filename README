@@ -1,0 +1,90 @@
+NAME
+    siesh - Sieve Shell
+
+SYNOPSIS
+    siesh --user USER --host SERVER
+
+DESCRIPTION
+    Siesh provides a shell-like interface for manipulating sieve scripts
+    using the ManageSieve protocol.
+
+OPTIONS
+    --user|-u USERNAME
+        Specifies the username to use when logging into the sieve server.
+        This option defaults to the value of the environment variable
+        "USER".
+
+    --host||-h HOST
+        Specifies the machine to connect to. Defaults to "imap".
+
+CONFIGURATION FILE
+    When siesh is invoked, it first reads configurations variables from
+    /etc/siesh.conf or ~/.siesh.conf if one of these files exist. The file
+    is structured as a set of lines with name and values seperated by a
+    equal signs.
+
+            user = mario
+            host = sieve.example.com
+
+    Currently only these both variables are recognized. Values are overriden
+    by the configurations options specified on the command line.
+
+COMMANDS
+    list
+        Prints a list of all scripts on the server. The currently active
+        script, if any, is marked by a *** (astersik).
+
+        Synonyms: ls
+
+    delete *script-name* *...*
+        Deletes a script. It's not possible to delete a active script, so
+        please use deactivate first. There's no way to undelete this
+        message.
+
+        Synonyms: rm
+
+    edit *script-name*
+        This command edits a script on the server without downloading it
+        explicitly to your disk first. Under the hood it creates a temporary
+        file, put the script content in it and calls $ENV{EDITOR} on it.
+        After that the script is uploaded back. It's also possible to create
+        and edit a new script with this command.
+
+        If your script is syntactical incorrect, you will be prompted to
+        re-edit the file or throw away your changes.
+
+    activate *script-name*
+        Activates the listed script. User may have multiple Sieve scripts on
+        the server, yet only one script may be used for filtering of
+        incoming messages. This is the active script. Users may have zero or
+        one active scripts
+
+    deactivate
+        Deactivate all scripts. Deactivation of all your scripts results in
+        no filtering at all.
+
+    cat *script-name* *...*
+        Print scripts on the standard output.
+
+    quit
+        Terminates the sessiion with the remote SIEVE server. An end of file
+        will also terminate the session and exit.
+
+    help
+        Print a short description of all commands.
+
+    put *file-name* *script-name*
+        Store a local file as script on the remote machine.
+
+    get *file-name* *local-name*
+        Retrieve a remote script and store it on the local machine.
+
+SEE ALSO
+    Net::ManageSieve::Plus, Net::ManageSieve
+
+COPYRIGHT & LICENSE
+    Copyright 2008 Mario Domgoergen, all rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
