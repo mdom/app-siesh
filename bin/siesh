@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use Term::ShellUI;
-use Net::ManageSieve::Plus;
+use Net::ManageSieve::Siesh;
 use IO::Prompt;
 use Getopt::Long;
 use Pod::Usage;
@@ -26,7 +26,7 @@ my $result = GetOptions( \%config, 'user=s', 'host=s' ) or pod2usage(2);
 $config{user} ||= $ENV{USER};
 $config{host} ||= 'imap';
 
-my $sieve = Net::ManageSieve::Plus->new( $config{host}, tls => 'require', )
+my $sieve = Net::ManageSieve::Siesh->new( $config{host}, tls => 'require', )
   or die "Can't connect to $config{host}: $!\n";
 
 my $password = prompt( "Password: ", -e => '*' );
@@ -324,7 +324,7 @@ Retrieve a remote script and store it on the local machine.
 
 =head1 SEE ALSO
 
-L<Net::ManageSieve::Plus>, L<Net::ManageSieve>
+L<Net::ManageSieve::Siesh>, L<Net::ManageSieve>
 
 =head1 COPYRIGHT & LICENSE
 

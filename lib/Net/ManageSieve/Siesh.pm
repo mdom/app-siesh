@@ -5,7 +5,7 @@ use strict;
 use File::Temp qw/tempfile/;
 use Net::ManageSieve;
 
-our @ISA = qw/Net::ManageSieve/;
+use parent qw(Net::ManageSieve);
 
 =head1 NAME
 
@@ -22,13 +22,13 @@ our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
-Net::ManageSieve::Plus expands Net::ManagieSieve beyond just implementing
+Net::ManageSieve::Siesh expands Net::ManagieSieve beyond just implementing
 the core RFC protocol. There are functions to upload and download files,
 deactivating scripts, copy and move them etc.
 
-    use Net::ManageSieve::Plus;
+    use Net::ManageSieve::Siesh;
 
-    my $sieve = Net::ManageSieve::Plus->new();
+    my $sieve = Net::ManageSieve::Siesh->new();
     $sieve->copy('script1','script2');
     $sieve->mv('script2','script3');
     $sieve->put('../script.txt','script4');
@@ -170,8 +170,8 @@ Mario Domgoergen, C<< <mario at domgoergen.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-net-managesieve-plus at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-ManageSieve-Plus>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-app-siesh at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-Siesh>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SEE ALSO
@@ -182,7 +182,7 @@ C<siesh(1)>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Net::ManageSieve::Plus
+    perldoc Net::ManageSieve::Siesh
 
 You can also look for information at:
 
@@ -198,4 +198,4 @@ under the same terms as Perl itself.
 =cut
 
 
-1; # End of Net::ManageSieve::Plus
+1; # End of Net::ManageSieve::Siesh
