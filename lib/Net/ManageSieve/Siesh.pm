@@ -1,4 +1,4 @@
-package Net::ManageSieve::Plus;
+package Net::ManageSieve::Siesh;
 
 use warnings;
 use strict;
@@ -9,7 +9,7 @@ our @ISA = qw/Net::ManageSieve/;
 
 =head1 NAME
 
-Net::ManageSieve::Plus - Expanding ManagieSieve beyond the Protocol
+Net::ManageSieve::Siesh - Expanding ManagieSieve beyond the Protocol
 
 =head1 VERSION
 
