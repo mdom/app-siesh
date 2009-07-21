@@ -140,7 +140,8 @@ $term->run();
 sub cat {
     my $content = "";
     for my $script (@_) {
-        $content .= $sieve->getscript($script) or die $sieve->error() . "\n";
+	my $new_content = $sieve->getscript($script) or die $sieve->error() . "\n";
+        $content .= $new_content;
     }
     print $content;
 }
