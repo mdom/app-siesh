@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
         'Config::Find'     => 0,
         'parent'           => 0,
     },
+    build_requires     => { 'Test::More' => 0, },
     recommendes        => {},
     create_makefile_pl => 'traditional',
     create_readme      => 1,
