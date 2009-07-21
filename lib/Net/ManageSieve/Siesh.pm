@@ -109,7 +109,7 @@ please take a look at C<siesh(1)>.
 
 =item C<deactivate()>
 
-This function deactivates all active scripts on the server. This has
+Deactivates all active scripts on the server. This has
 the same effect as using the function setactive with an empty string
 as argument.
 
@@ -133,11 +133,9 @@ does not exist.
 
 Uploads C<$file> with the name C<$scriptname> to the server. 
 
-
 =item C<getfile($scriptname,$file)>
 
 Downloads the script names <$scriptname> to the file specified by C<$file>.
-
 
 =item C<listscripts()>
 
@@ -145,8 +143,6 @@ Returns a list of scripts and the active script. This function overwrites
 listscripts provided by Net::ManageSieve in order to return a more
 sane data structure. It returns a reference to an array, that holds all
 scripts, and a scalar with the name of the active script in list context and just the array reference in scalar context.
-
-
 =item C<error()>
 
 Returns $@ or $! of a previous failed method. Please notice, that this

@@ -210,7 +210,6 @@ sub equal_sep {
             $config{$k} = $v;
         }
     }
-
     return \%config;
 }
 
@@ -279,7 +278,7 @@ Synonyms: B<rm>
 
 =item B<edit> I<script-name>
 
-This command edits a script on the server without downloading it
+Edits a script on the server without downloading it
 explicitly to your disk first. Under the hood it creates a temporary file,
 put the script content in it and calls C<$ENV{EDITOR}> on it. After that
 the script is uploaded back. It's also possible to create and edit a
