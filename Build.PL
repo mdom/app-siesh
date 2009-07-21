@@ -21,6 +21,13 @@ my $builder = Module::Build->new(
     recommendes        => {},
     create_makefile_pl => 'traditional',
     create_readme      => 1,
+    meta_merge         => {
+        resources => {
+            repository => 'http://github.com/mdom/app-siesh',
+        },
+        author => ['Mario Domgoergen <mario@domgoergen.com>']
+    }
+
 );
 
 $builder->create_build_script();
