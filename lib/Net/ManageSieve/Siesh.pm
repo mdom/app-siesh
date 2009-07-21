@@ -4,8 +4,79 @@ use warnings;
 use strict;
 use File::Temp qw/tempfile/;
 use Net::ManageSieve;
-
 use parent qw(Net::ManageSieve);
+
+our $VERSION = '0.05';
+
+sub deactivate {
+    my $self = shift;
+    $self->setactive("") or $self->error($@);
+}
+
+sub movescript {
+    my ( $self, $source, $target ) = @_;
+    $self->copyscript( $source, $target );
+    $self->deletescript($source) or $self->error($@);
+}
+
+sub copyscript {
+    my ( $self, $source, $target ) = @_;
+    my $content = $self->getscript($source) or $self->error($@);
+    $self->putscript( $target, $content ) or $self->error($@);
+}
+
+sub temp_scriptfile {
+    my ( $self, $script, $create ) = @_;
+    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+    if ( !$fh ) { $self->error($@); }
+
+    my $content = $self->getscript($script);
+    if ( !defined($content) and !$create ) { $self->error($@); }
+
+    $content ||= '';
+    print {$fh} $content or $self->error($!);
+    return $fh, $filename;
+}
+
+sub putfile {
+    my ( $self, $file, $name ) = @_;
+    my $script;
+    open( my $fh, '<', $file ) or $self->error($!);
+    { $/ = undef, $script = <$fh> }
+    close $fh;
+    $self->putscript( $name, $script ) or $self->error($@);
+}
+
+sub getfile {
+    my ( $self, $name, $file ) = @_;
+    my $script = $self->getscript($name) or $self->error($@);
+    open( my $fh, '>', $file ) or $self->error($!);
+    print {$fh} $script or $self->error($!);
+    close $fh;
+}
+
+sub listscripts {
+    my $self = shift;
+    my ($scripts);
+    unless ( $scripts = $self->SUPER::listscripts() ) {
+        $self->error($@);
+    }
+    my $active = pop @{$scripts};
+    return wantarray ? ( $scripts, $active ) : $scripts;
+}
+
+sub error {
+    my ( $self, $error ) = @_;
+    if ( defined($error) ) {
+        $self->_set_error($error);
+        return undef;
+    }
+    return $self->{_last_error};
+}
+
+1;    # End of Net::ManageSieve::Siesh
+
+__END__
 
 =head1 NAME
 
@@ -14,11 +85,6 @@ Net::ManageSieve::Siesh - Expanding ManagieSieve beyond the Protocol
 =head1 VERSION
 
 Version 0.05
-
-=cut
-
-our $VERSION = '0.05';
-
 
 =head1 SYNOPSIS
 
@@ -47,37 +113,14 @@ This function deactivates all active scripts on the server. This has
 the same effect as using the function setactive with an empty string
 as argument.
 
-=cut
-
-sub deactivate {
-	my $self = shift;
-	$self->setactive("") or do { $self->_set_error($@) ; return undef };
-}
-
 =item C<movescript($oldscriptname,$newscriptname)>
 
 Renames the script. This functions is equivalent to copying a script
 and then deleting the source script.
 
-=cut
-
-sub movescript {
-	my ($self,$source,$target) = @_;
-	$self->copyscript($source,$target);
-	$self->deletescript($source) or do { $self->_set_error($@) ; return undef };
-}
-
 =item C<copyscript($oldscriptname,$newscriptname)>
 
 Copy the script C<$oldscriptname> to C<$newscriptname>.
-
-=cut
-
-sub copyscript {
-	my ($self,$source,$target) = @_;
-	my $content = $self->getscript($source) or do { $self->_set_error($@) ; return undef; };
-	$self->putscript($target,$content) or do { $self->_set_error($@) ; return undef };
-}
 
 =item C<temp_scriptfile($scriptname,$create)>
 
@@ -86,48 +129,15 @@ into the returned file. Returns the opened filehandle and the
 filename. Unless C<$create> is true, return undef if the requested script
 does not exist.
 
-=cut
-
-sub temp_scriptfile {
-	my ($self,$script,$create) = @_;
-	my ($fh,$filename) = eval { tempfile(UNLINK => 1) };
-		unless ($fh) { $self->_set_error($@) ; return undef };
-	my $content = $self->getscript($script);
-		if (!defined($content) and !$create) { $self->_set_error($@) ; return undef };
-	$content ||= '';
-	print $fh $content or
-		do { $self->_set_error($!) ; return undef };
-	return $fh,$filename;
-}
-
 =item C<putfile($file,$scriptname)>
 
 Uploads C<$file> with the name C<$scriptname> to the server. 
 
-=cut
-
-sub putfile {
-	my($self,$file,$name) = @_;
-	my $script;
-	open(my $fh, '<', $file) or do { $self->_set_error($!) ; return undef };
-	{ $/ = undef, $script = <$fh> } 
-	close $fh;
-	$self->putscript($name,$script) or do { $self->_set_error($@) ; return undef };
-}
 
 =item C<getfile($scriptname,$file)>
 
 Downloads the script names <$scriptname> to the file specified by C<$file>.
 
-=cut
-
-sub getfile {
-	my($self,$name,$file) = @_;
-	my $script = $self->getscript($name) or do { $self->_set_error($@) ; return undef };
-	open(my $fh, '>', $file) or do { $self->_set_error($!) ; return undef };
-	print $fh $script or do { $self->_set_error($!) ; return undef }; 
-	close $fh;
-}
 
 =item C<listscripts()>
 
@@ -136,18 +146,6 @@ listscripts provided by Net::ManageSieve in order to return a more
 sane data structure. It returns a reference to an array, that holds all
 scripts, and a scalar with the name of the active script in list context and just the array reference in scalar context.
 
-=cut
-
-sub listscripts {
-	my $self = shift;
-	my($scripts);
-	unless ( $scripts = $self->SUPER::listscripts() ) {
-		$self->_set_error($@);
-		return undef;
-	}
-	my $active = pop @{$scripts};
-	return wantarray ? ( $scripts, $active ) : $scripts;
-}
 
 =item C<error()>
 
@@ -156,13 +154,6 @@ method overwrites the method of the same name in C<Net::ManageSieve>
 and just returns the error mesage itself.
 
 =back
-
-=cut
-
-sub error {
-	my $self = shift;
-	return $self->{_last_error};
-}
 
 =head1 AUTHOR
 
@@ -176,7 +167,7 @@ automatically be notified of progress on your bug as I make changes.
 
 =head1 SEE ALSO
 
-C<siesh(1)>
+L<siesh(1)>
 
 =head1 SUPPORT
 
@@ -195,7 +186,3 @@ Copyright 2008 Mario Domgoergen, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-=cut
-
-
-1; # End of Net::ManageSieve::Siesh
