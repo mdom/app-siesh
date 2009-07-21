@@ -44,11 +44,11 @@ COMMANDS
         Synonyms: rm
 
     edit *script-name*
-        This command edits a script on the server without downloading it
-        explicitly to your disk first. Under the hood it creates a temporary
-        file, put the script content in it and calls $ENV{EDITOR} on it.
-        After that the script is uploaded back. It's also possible to create
-        and edit a new script with this command.
+        Edits a script on the server without downloading it explicitly to
+        your disk first. Under the hood it creates a temporary file, put the
+        script content in it and calls $ENV{EDITOR} on it. After that the
+        script is uploaded back. It's also possible to create and edit a new
+        script with this command.
 
         If your script is syntactical incorrect, you will be prompted to
         re-edit the file or throw away your changes.
@@ -80,7 +80,7 @@ COMMANDS
         Retrieve a remote script and store it on the local machine.
 
 SEE ALSO
-    Net::ManageSieve::Plus, Net::ManageSieve
+    Net::ManageSieve::Siesh, Net::ManageSieve
 
 COPYRIGHT & LICENSE
     Copyright 2008 Mario Domgoergen, all rights reserved.

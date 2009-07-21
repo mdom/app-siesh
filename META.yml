@@ -3,10 +3,12 @@ name: App-Siesh
 version: 0.06
 author:
   - 'Mario Domgoergen <mario@domgoergen.com>'
+  - 'Mario Domgoergen <mario@domgoergen.com>'
 abstract: Sieve Shell
 license: perl
 resources:
   license: ~
+  repository: http://github.com/mdom/app-siesh
 requires:
   Config::Find: 0
   File::Temp: 0
@@ -14,9 +16,12 @@ requires:
   IO::Socket::SSL: 0
   Net::ManageSieve: 0
   Term::ShellUI: 0
+  parent: 0
+build_requires:
+  Test::More: 0
 provides:
-  Net::ManageSieve::Plus:
-    file: lib/Net/ManageSieve/Plus.pm
+  Net::ManageSieve::Siesh:
+    file: lib/Net/ManageSieve/Siesh.pm
     version: 0.05
 generated_by: Module::Build version 0.32
 meta-spec:
