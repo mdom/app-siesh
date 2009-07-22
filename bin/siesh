@@ -21,12 +21,24 @@ if ( my $filename = Config::Find->find ) {
     %config = %{ equal_sep($filename) };
 }
 
-my $result = GetOptions( \%config, 'user=s', 'host=s' ) or pod2usage(2);
+my $result = GetOptions( \%config,
+    'user=s',
+    'host=s',
+    'debug',
+    'tls=s',
+) or pod2usage(2);
 
 $config{user} ||= $ENV{USER};
 $config{host} ||= 'imap';
 
-my $sieve = Net::ManageSieve::Siesh->new( $config{host}, tls => 'require', )
+my @params = ();
+
+foreach ('tls', 'debug') {
+    push @params, $_, $config{$_}
+        if defined $config{$_};
+}
+
+my $sieve = Net::ManageSieve::Siesh->new( $config{host}, @params )
   or die "Can't connect to $config{host}: $!\n";
 
 my $password = prompt( "Password: ", -e => '*' );
@@ -228,7 +240,12 @@ siesh - interactive sieve shell
 
 =head1 SYNOPSIS
 
-siesh --user USER --host SERVER
+$ siesh
+    --user USER
+    --host SERVER
+    --tls {require|auto}
+    --port PORT
+    --debug
 
 =head1 DESCRIPTION
 
