@@ -1,5 +1,5 @@
 NAME
-    siesh - Sieve Shell
+    siesh - interactive sieve shell
 
 SYNOPSIS
     siesh --user USER --host SERVER
