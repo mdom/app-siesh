@@ -67,7 +67,7 @@ my $term = new Term::ShellUI(
             proc    => \&list_scripts,
         },
         "activate" => {
-            desc    => "mark a script as active",
+            desc    => "Mark a script as active.",
             maxargs => 1,
             proc =>
               sub { $sieve->setactive(shift) or die $sieve->error() . "\n" },
