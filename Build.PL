@@ -25,7 +25,6 @@ my $builder = Module::Build->new(
         resources => {
             repository => 'http://github.com/mdom/app-siesh',
         },
-        author => ['Mario Domgoergen <mario@domgoergen.com>']
     }
 
 );
