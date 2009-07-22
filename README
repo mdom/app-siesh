@@ -1,90 +1,106 @@
-NAME
-    siesh - interactive sieve shell
+NNAAMMEE
+       siesh - interactive sieve shell
 
-SYNOPSIS
-    siesh --user USER --host SERVER
+SSYYNNOOPPSSIISS
+       $ siesh \
+           --debug \
+           --user USER \
+           --host SERVER \
+           --tls {require|auto} \
+           --port PORT
 
-DESCRIPTION
-    Siesh provides a shell-like interface for manipulating sieve scripts
-    using the ManageSieve protocol.
+DDEESSCCRRIIPPTTIIOONN
+       Siesh provides a shell-like interface for manipulating sieve scripts
+       using the ManageSieve protocol.
 
-OPTIONS
-    --user|-u USERNAME
-        Specifies the username to use when logging into the sieve server.
-        This option defaults to the value of the environment variable
-        "USER".
+OOPPTTIIOONNSS
+       ----ddeebbuugg|--dd
+           Enable debugging.
 
-    --host||-h HOST
-        Specifies the machine to connect to. Defaults to "imap".
+       ----uusseerr|--uu USERNAME
+           Specifies the username to use when logging into the sieve server.
+           This option defaults to the value of the environment variable
+           "USER".
 
-CONFIGURATION FILE
-    When siesh is invoked, it first reads configurations variables from
-    /etc/siesh.conf or ~/.siesh.conf if one of these files exist. The file
-    is structured as a set of lines with name and values seperated by a
-    equal signs.
+       ----hhoosstt|--hh HOST
+           Specifies the machine to connect to. Defaults to "imap".
 
-            user = mario
-            host = sieve.example.com
+       ----ttllss|--tt {require|auto}
+           Specifies that TLS is required (require) or optional (auto).
 
-    Currently only these both variables are recognized. Values are overriden
-    by the configurations options specified on the command line.
+       ----ppoorrtt|--pp PORT
+           Specifies the remote port to connect to. Defaults to 2000.
 
-COMMANDS
-    list
-        Prints a list of all scripts on the server. The currently active
-        script, if any, is marked by a *** (astersik).
+CCOONNFFIIGGUURRAATTIIOONN FFIILLEE
+       When siesh is invoked, it first reads configurations variables from
+       _/_e_t_c_/_s_i_e_s_h_._c_o_n_f or _~_/_._s_i_e_s_h_._c_o_n_f if one of these files exist. The file
+       is structured as a set of lines with name and values seperated by an
+       equal sign.
 
-        Synonyms: ls
+               user  = mario
+               host  = sieve.example.com
+               tls   = required
+               port  = 2000
+               debug = 1
 
-    delete *script-name* *...*
-        Deletes a script. It's not possible to delete a active script, so
-        please use deactivate first. There's no way to undelete this
-        message.
+       Currently only these two variables are recognized. Values are overriden
+       by options specified on the command line.
 
-        Synonyms: rm
+CCOOMMMMAANNDDSS
+       lliisstt
+           Prints a list of all scripts on the server. The currently active
+           script, if any, is marked by a _* (astersik).
 
-    edit *script-name*
-        Edits a script on the server without downloading it explicitly to
-        your disk first. Under the hood it creates a temporary file, put the
-        script content in it and calls $ENV{EDITOR} on it. After that the
-        script is uploaded back. It's also possible to create and edit a new
-        script with this command.
+           Synonyms: llss
 
-        If your script is syntactical incorrect, you will be prompted to
-        re-edit the file or throw away your changes.
+       ddeelleettee _s_c_r_i_p_t_-_n_a_m_e _._._.
+           Deletes a script. It’s not possible to delete the currently active
+           script, so please use deactivate first. There’s no way to undelete
+           a deleted script.
 
-    activate *script-name*
-        Activates the listed script. User may have multiple Sieve scripts on
-        the server, yet only one script may be used for filtering of
-        incoming messages. This is the active script. Users may have zero or
-        one active scripts
+           Synonyms: rrmm
 
-    deactivate
-        Deactivate all scripts. Deactivation of all your scripts results in
-        no filtering at all.
+       eeddiitt _s_c_r_i_p_t_-_n_a_m_e
+           Edits a script on the server without downloading it explicitly to
+           your disk first. Under the hood it creates a temporary file, puts
+           the script content in it and calls $ENV{EDITOR} on it. After that
+           the script is uploaded back. It’s also possible to create and edit
+           a new script with this command.
 
-    cat *script-name* *...*
-        Print scripts on the standard output.
+           If your script is syntactical incorrect, you will be prompted to
+           re-edit the file or throw away your changes.
 
-    quit
-        Terminates the sessiion with the remote SIEVE server. An end of file
-        will also terminate the session and exit.
+       aaccttiivvaattee _s_c_r_i_p_t_-_n_a_m_e
+           Activates the listed script. User may have multiple Sieve scripts
+           on the server, yet only one script may be used for filtering of
+           incoming messages. This is called the active script. Users may have
+           zero or one active scripts
 
-    help
-        Print a short description of all commands.
+       ddeeaaccttiivvaattee
+           Deactivate all scripts. Deactivation of all your scripts results in
+           no filtering at all.
 
-    put *file-name* *script-name*
-        Store a local file as script on the remote machine.
+       ccaatt _s_c_r_i_p_t_-_n_a_m_e _._._.
+           Print scripts on the standard output.
 
-    get *file-name* *local-name*
-        Retrieve a remote script and store it on the local machine.
+       qquuiitt
+           Terminates the sessiion with the remote SIEVE server. An end of
+           file will also terminate the session and exit.
 
-SEE ALSO
-    Net::ManageSieve::Siesh, Net::ManageSieve
+       hheellpp
+           Print a short description of all commands.
 
-COPYRIGHT & LICENSE
-    Copyright 2008 Mario Domgoergen, all rights reserved.
+       ppuutt _f_i_l_e_-_n_a_m_e _s_c_r_i_p_t_-_n_a_m_e
+           Store a local file as script on the remote machine.
 
-    This program is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself.
+       ggeett _f_i_l_e_-_n_a_m_e _l_o_c_a_l_-_n_a_m_e
+           Retrieve a remote script and store it on the local machine.
 
+SSEEEE AALLSSOO
+       Net::ManageSieve::Siesh, Net::ManageSieve
+
+CCOOPPYYRRIIGGHHTT && LLIICCEENNSSEE
+       Copyright 2008 Mario Domgoergen, all rights reserved.
+
+       This program is free software; you can redistribute it and/or modify it
+       under the same terms as Perl itself.

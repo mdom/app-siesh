@@ -240,12 +240,12 @@ siesh - interactive sieve shell
 
 =head1 SYNOPSIS
 
-$ siesh
-    --user USER
-    --host SERVER
-    --tls {require|auto}
+$ siesh \
+    --debug \
+    --user USER \
+    --host SERVER \
+    --tls {require|auto} \
     --port PORT
-    --debug
 
 =head1 DESCRIPTION
 
@@ -256,14 +256,26 @@ using the ManageSieve protocol.
 
 =over 4
 
+=item B<--debug>|B<-d>
+
+Enable debugging.
+
 =item B<--user>|B<-u> USERNAME
 
 Specifies the username to use when logging into the sieve server. This
 option defaults to the value of the environment variable C<USER>.
 
-=item B<--host|>|B<-h> HOST
+=item B<--host>|B<-h> HOST
 
 Specifies the machine to connect to. Defaults to C<imap>.
+
+=item B<--tls>|B<-t> {require|auto}
+
+Specifies that TLS is required (require) or optional (auto).
+
+=item B<--port>|B<-p> PORT
+
+Specifies the remote port to connect to. Defaults to C<2000>.
 
 =back
 
@@ -274,8 +286,11 @@ F</etc/siesh.conf> or F<~/.siesh.conf> if one of these files exist. The
 file is structured as a set of lines with name and values seperated by
 an equal sign.
 
-	user = mario
-	host = sieve.example.com
+	user  = mario
+	host  = sieve.example.com
+	tls   = required
+	port  = 2000
+	debug = 1
 
 Currently only these two variables are recognized. Values are overriden
 by options specified on the command line.
