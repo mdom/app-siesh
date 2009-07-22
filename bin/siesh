@@ -38,66 +38,67 @@ my $term = new Term::ShellUI(
     prompt       => 'siesh> ',
     commands     => {
         "help" => {
-            desc   => "Print helpful information",
+            desc   => "Print this help page.",
             args   => sub { shift->help_args( undef, @_ ); },
             method => sub { shift->help_call( undef, @_ ); }
         },
         "put" => {
-            desc    => "Stores the FILE as NAME",
+            desc    => 'Upload a script onto the server.',
             maxargs => 2,
             minargs => 2,
             proc => sub { $sieve->putfile(@_) or die $sieve->error() . "\n" },
             args => sub { shift->complete_files(@_); },
         },
         "get" => {
-            desc => "This command gets the contents of the specified script.",
+            desc    => "Fetch a script from the server and store locally.",
             maxargs => 2,
             minargs => 2,
             proc => sub { $sieve->getfile(@_) or die $sieve->error() . "\n" },
             args => sub { shift->complete_files(@_); },
         },
         "quit" => {
-            desc    => "Quit using siesh",
+            desc    => "Quit siesh.",
             maxargs => 0,
             method  => sub { $sieve->logout; shift->exit_requested(1); }
         },
         "list" => {
-            desc =>
-              "This command lists the scripts the user has on the server.",
+            desc    => "List all scripts stored on the server.",
             maxargs => 0,
             proc    => \&list_scripts,
         },
         "activate" => {
-            desc    => "This command sets a script active.",
+            desc    => "mark a script as active",
             maxargs => 1,
             proc =>
               sub { $sieve->setactive(shift) or die $sieve->error() . "\n" },
             args => \&complete_scripts,
         },
         "edit" => {
-            desc    => "This command sets a script active.",
+            desc    => 'Edit script using $EDITOR.',
             maxargs => 1,
             proc    => sub { edit_script(shift) },
             args    => \&complete_scripts,
         },
         "view" => {
-            desc    => "This command views a script.",
+            desc    => 'Examine the contents of a script using $PAGER.',
             maxargs => 1,
             proc    => sub { view_script(shift) },
             args    => \&complete_scripts,
         },
         "delete" => {
-            desc    => "This command is used to delete a user's Sieve script.",
+            desc    => "Delete a script from the server.",
             minargs => 1,
             proc    => \&delete,
             args    => \&complete_scripts,
         },
         "cat" => {
+            desc    => "Show the contents of a script on stdout.",
             minargs => 1,
             proc    => \&cat,
             args    => \&complete_scripts,
         },
         "copy" => {
+            desc    => 'Make a copy of a script under another name.',
             maxargs => 2,
             minargs => 2,
             proc =>
@@ -105,6 +106,7 @@ my $term = new Term::ShellUI(
             args => \&complete_scripts,
         },
         "move" => {
+            desc    => 'Rename a script on the server.',
             maxargs => 2,
             minargs => 2,
             proc =>
@@ -112,6 +114,7 @@ my $term = new Term::ShellUI(
             args => \&complete_scripts,
         },
         "deactivate" => {
+            desc    => 'Mark the currently activated script as inactive.',
             maxargs => 0,
             proc => sub { $sieve->deactivate() or die $sieve->error() . "\n" },
             args => \&complete_scripts,
@@ -140,7 +143,8 @@ $term->run();
 sub cat {
     my $content = "";
     for my $script (@_) {
-	my $new_content = $sieve->getscript($script) or die $sieve->error() . "\n";
+        my $new_content = $sieve->getscript($script)
+          or die $sieve->error() . "\n";
         $content .= $new_content;
     }
     print $content;
