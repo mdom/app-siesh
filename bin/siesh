@@ -22,21 +22,26 @@ if ( my $filename = Config::Find->find ) {
 }
 
 my $result = GetOptions( \%config,
+    'debug',
     'user=s',
     'host=s',
-    'debug',
-    'tls=s',
+    'port=s',
+    'tls=s'
 ) or pod2usage(2);
 
+# Set defaults for Net::ManageSieve::Siesh construction
 $config{user} ||= $ENV{USER};
 $config{host} ||= 'imap';
 
 my @params = ();
 
-foreach ('tls', 'debug') {
-    push @params, $_, $config{$_}
+foreach ('debug', 'port') {
+    push @params, ucfirst($_), $config{$_}
         if defined $config{$_};
 }
+
+push @params, 'tls', $config{'tls'}
+    if defined $config{'tls'};
 
 my $sieve = Net::ManageSieve::Siesh->new( $config{host}, @params )
   or die "Can't connect to $config{host}: $!\n";
@@ -240,11 +245,11 @@ siesh - interactive sieve shell
 
 =head1 SYNOPSIS
 
-$ siesh \
-    --debug \
-    --user USER \
-    --host SERVER \
-    --tls {require|auto} \
+$ siesh
+    --debug 
+    --user USER 
+    --host SERVER 
+    --tls {require|auto} 
     --port PORT
 
 =head1 DESCRIPTION
@@ -269,13 +274,13 @@ option defaults to the value of the environment variable C<USER>.
 
 Specifies the machine to connect to. Defaults to C<imap>.
 
-=item B<--tls>|B<-t> {require|auto}
-
-Specifies that TLS is required (require) or optional (auto).
-
 =item B<--port>|B<-p> PORT
 
 Specifies the remote port to connect to. Defaults to C<2000>.
+
+=item B<--tls>|B<-t> {require|auto}
+
+Specifies whether TLS is required ("require") or optional ("auto"). Defaults to unset, disabling TLS.
 
 =back
 
@@ -288,8 +293,8 @@ an equal sign.
 
 	user  = mario
 	host  = sieve.example.com
-	tls   = required
 	port  = 2000
+	tls   = required
 	debug = 1
 
 Currently only these two variables are recognized. Values are overriden
