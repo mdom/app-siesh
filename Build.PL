@@ -7,7 +7,7 @@ my $builder = Module::Build->new(
     license           => 'perl',
     dist_author       => 'Mario Domgoergen <mario@domgoergen.com>',
     dist_version_from => 'bin/siesh',
-    create_readme     => 1,
+    dist_abstract     => 'interactive sieve shell',
     requires          => {
         'File::Temp'       => 0,
         'IO::Prompt'       => 0,
@@ -18,9 +18,8 @@ my $builder = Module::Build->new(
         'parent'           => 0,
     },
     build_requires     => { 'Test::More' => 0, },
-    recommendes        => {},
-    create_makefile_pl => 'traditional',
-    create_readme      => 1,
+    create_makefile_pl => 'passthrough',
+    create_readme     => 1,
     meta_merge         => {
         resources => {
             repository => 'http://github.com/mdom/app-siesh',
