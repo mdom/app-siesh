@@ -255,13 +255,13 @@ Specifies the machine to connect to. Defaults to C<imap>.
 When siesh is invoked, it first reads configurations variables from
 F</etc/siesh.conf> or F<~/.siesh.conf> if one of these files exist. The
 file is structured as a set of lines with name and values seperated by
-a equal signs.
+an equal sign.
 
 	user = mario
 	host = sieve.example.com
 
-Currently only these both variables are recognized. Values are overriden
-by the configurations options specified on the command line.
+Currently only these two variables are recognized. Values are overriden
+by options specified on the command line.
 
 =head1 COMMANDS
 
@@ -276,8 +276,8 @@ Synonyms: B<ls>
 
 =item B<delete> I<script-name> I<...>
 
-Deletes a script. It's not possible to delete a active script, so please
-use deactivate first. There's no way to undelete this message.
+Deletes a script. It's not possible to delete the currently active script, so please
+use deactivate first. There's no way to undelete a deleted script.
 
 Synonyms: B<rm>
 
@@ -285,7 +285,7 @@ Synonyms: B<rm>
 
 Edits a script on the server without downloading it
 explicitly to your disk first. Under the hood it creates a temporary file,
-put the script content in it and calls C<$ENV{EDITOR}> on it. After that
+puts the script content in it and calls C<$ENV{EDITOR}> on it. After that
 the script is uploaded back. It's also possible to create and edit a
 new script with this command.
 
@@ -296,8 +296,8 @@ re-edit the file or throw away your changes.
 
 Activates the listed script. User may have multiple Sieve scripts on
 the server, yet only one script may be used for filtering of incoming
-messages. This is the active script. Users may have zero or one active
-scripts
+messages. This is called the active script. Users may have zero or one
+active scripts
 
 =item B<deactivate>
 
