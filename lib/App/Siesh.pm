@@ -274,6 +274,10 @@ Retrieve a remote script and store it on the local machine.
 
 L<siesh>, L<Net::ManageSieve::Siesh>, L<Net::ManageSieve>
 
+=head1 AUTHOR
+
+Mario Domgoergen <dom@math.uni-bonn.de>
+
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2008 Mario Domgoergen, all rights reserved.
