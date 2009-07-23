@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'IO::Socket::SSL'  => 0,
         'Config::Find'     => 0,
         'parent'           => 0,
+        'Pod::Usage'       => 0,
     },
     build_requires     => { 'Test::More' => 0, },
     create_makefile_pl => 'passthrough',

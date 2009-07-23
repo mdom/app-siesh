@@ -7,8 +7,7 @@ use App::Siesh;
 use Getopt::Long;
 use IO::Prompt;
 use Config::Find;
-
-our $VERSION=0.09;
+use Pod::Usage;
 
 sub equal_sep {
     my $file = shift;
@@ -64,7 +63,7 @@ siesh - interactive sieve shell
 
 =head1 SYNOPSIS
 
-$ siesh
+ siesh
     --debug 
     --user USER 
     --host SERVER 
