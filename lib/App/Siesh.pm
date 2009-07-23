@@ -7,7 +7,7 @@ use Term::ShellUI;
 use Net::ManageSieve::Siesh;
 use File::Temp qw/tempfile/;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub run {
     my ( $class, %config ) = @_;

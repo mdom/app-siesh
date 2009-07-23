@@ -22,7 +22,7 @@ build_requires:
 provides:
   App::Siesh:
     file: lib/App/Siesh.pm
-    version: 0.10
+    version: 0.11
   Net::ManageSieve::Siesh:
     file: lib/Net/ManageSieve/Siesh.pm
     version: 0.05
