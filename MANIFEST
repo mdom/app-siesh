@@ -4,3 +4,4 @@ lib/Net/ManageSieve/Siesh.pm
 MANIFEST			This list of files
 META.yml
 README
+Makefile.PL

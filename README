@@ -37,11 +37,12 @@ CONFIGURATION FILE
             user  = mario
             host  = sieve.example.com
             port  = 2000
-            tls   = required
+            tls   = require
             debug = 1
+            password = secret
 
-    Currently only these two variables are recognized. Values are overriden
-    by options specified on the command line.
+    Currently only these six options are recognized. Values are overriden by
+    options specified on the command line.
 
 COMMANDS
     list

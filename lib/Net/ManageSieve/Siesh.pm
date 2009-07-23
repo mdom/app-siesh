@@ -65,6 +65,17 @@ sub listscripts {
     return wantarray ? ( $scripts, $active ) : $scripts;
 }
 
+sub print_script_listing {
+    my $sieve = shift;
+    my ( $scripts, $active ) = $sieve->listscripts()
+      or die $sieve->error() . "\n";
+    for my $script ( @{$scripts} ) {
+        my $marker = '';
+        $marker = ' *' if $script eq $active;
+        print "${script}${marker}\n";
+    }
+}
+
 sub error {
     my ( $self, $error ) = @_;
     if ( defined($error) ) {
@@ -72,6 +83,48 @@ sub error {
         return undef;
     }
     return $self->{_last_error};
+}
+
+sub cat {
+    my $sieve = shift;
+    my $content = "";
+    for my $script (@_) {
+        my $new_content = $sieve->getscript($script)
+          or die $sieve->error() . "\n";
+        $content .= $new_content;
+    }
+    print $content;
+}
+
+sub delete {
+    my $sieve = shift;
+    for my $script (@_) {
+        $sieve->deletescript($script) or die $sieve->error() . "\n";
+    }
+}
+
+sub view_script {
+    my ($sieve,$script) = @_;
+    my ( $fh, $filename ) = $sieve->temp_scriptfile($script);
+    unless ($fh) { die $sieve->error() . "\n" }
+    my $pager = $ENV{'PAGER'} || "less";
+    system( $pager, $filename ) == 0 or die "$!\n";
+    close $fh;
+}
+
+sub edit_script {
+    my ($sieve,$script) = @_;
+    my ( $fh, $filename ) = $sieve->temp_scriptfile( $script, 1 );
+    unless ($fh) { die $sieve->error() . "\n" }
+    my $editor = $ENV{'VISUAL'} || $ENV{'EDITOR'} || "vi";
+    do {
+        system( $editor, $filename ) == 0 or die "$!\n";
+      } until (
+        $sieve->putfile( $filename, $script )
+          || !do { print "$@\n"; prompt( "Re-edit script? ", -yn ) }
+      );
+    close $fh;
+
 }
 
 1;    # End of Net::ManageSieve::Siesh

@@ -1,217 +1,14 @@
 #!/usr/bin/perl
 
-package App::Siesh;
-
 use strict;
 use warnings;
 
-use Term::ShellUI;
-use Net::ManageSieve::Siesh;
-use IO::Prompt;
+use App::Siesh;
 use Getopt::Long;
-use Pod::Usage;
-use File::Temp qw/tempfile/;
+use IO::Prompt;
 use Config::Find;
 
-our $VERSION = '0.08';
-
-my ( $user, $host, %config );
-
-if ( my $filename = Config::Find->find ) {
-    %config = %{ equal_sep($filename) };
-}
-
-my $result = GetOptions( \%config,
-    'debug',
-    'user=s',
-    'host=s',
-    'port=s',
-    'tls=s'
-) or pod2usage(2);
-
-# Set defaults for Net::ManageSieve::Siesh construction
-$config{user} ||= $ENV{USER};
-$config{host} ||= 'imap';
-
-my @params = ();
-
-foreach ('debug', 'port') {
-    push @params, ucfirst($_), $config{$_}
-        if defined $config{$_};
-}
-
-push @params, 'tls', $config{'tls'}
-    if defined $config{'tls'};
-
-my $sieve = Net::ManageSieve::Siesh->new( $config{host}, @params )
-  or die "Can't connect to $config{host}: $!\n";
-
-my $password = prompt( "Password: ", -e => '*' );
-
-$sieve->auth( $config{user}, $password ) or die "$@\n";
-
-my $term = new Term::ShellUI(
-    history_file => '~/.siesh_history',
-    prompt       => 'siesh> ',
-    commands     => {
-        "help" => {
-            desc   => "Print this help page.",
-            args   => sub { shift->help_args( undef, @_ ); },
-            method => sub { shift->help_call( undef, @_ ); }
-        },
-        "put" => {
-            desc    => 'Upload a script onto the server.',
-            maxargs => 2,
-            minargs => 2,
-            proc => sub { $sieve->putfile(@_) or die $sieve->error() . "\n" },
-            args => sub { shift->complete_files(@_); },
-        },
-        "get" => {
-            desc    => "Fetch a script from the server and store locally.",
-            maxargs => 2,
-            minargs => 2,
-            proc => sub { $sieve->getfile(@_) or die $sieve->error() . "\n" },
-            args => sub { shift->complete_files(@_); },
-        },
-        "quit" => {
-            desc    => "Quit siesh.",
-            maxargs => 0,
-            method  => sub { $sieve->logout; shift->exit_requested(1); }
-        },
-        "list" => {
-            desc    => "List all scripts stored on the server.",
-            maxargs => 0,
-            proc    => \&list_scripts,
-        },
-        "activate" => {
-            desc    => "Mark a script as active.",
-            maxargs => 1,
-            proc =>
-              sub { $sieve->setactive(shift) or die $sieve->error() . "\n" },
-            args => \&complete_scripts,
-        },
-        "edit" => {
-            desc    => 'Edit script using $EDITOR.',
-            maxargs => 1,
-            proc    => sub { edit_script(shift) },
-            args    => \&complete_scripts,
-        },
-        "view" => {
-            desc    => 'Examine the contents of a script using $PAGER.',
-            maxargs => 1,
-            proc    => sub { view_script(shift) },
-            args    => \&complete_scripts,
-        },
-        "delete" => {
-            desc    => "Delete a script from the server.",
-            minargs => 1,
-            proc    => \&delete,
-            args    => \&complete_scripts,
-        },
-        "cat" => {
-            desc    => "Show the contents of a script on stdout.",
-            minargs => 1,
-            proc    => \&cat,
-            args    => \&complete_scripts,
-        },
-        "copy" => {
-            desc    => 'Make a copy of a script under another name.',
-            maxargs => 2,
-            minargs => 2,
-            proc =>
-              sub { $sieve->copyscript(@_) or die $sieve->error() . "\n" },
-            args => \&complete_scripts,
-        },
-        "move" => {
-            desc    => 'Rename a script on the server.',
-            maxargs => 2,
-            minargs => 2,
-            proc =>
-              sub { $sieve->movescript(@_) or die $sieve->error() . "\n" },
-            args => \&complete_scripts,
-        },
-        "deactivate" => {
-            desc    => 'Mark the currently activated script as inactive.',
-            maxargs => 0,
-            proc => sub { $sieve->deactivate() or die $sieve->error() . "\n" },
-            args => \&complete_scripts,
-        },
-        "q"      => { alias => 'quit',       exclude_from_completion => 1 },
-        "logout" => { alias => 'quit',       exclude_from_completion => 1 },
-        "h"      => { alias => "help",       exclude_from_completion => 1 },
-        "ls"     => { alias => "list",       exclude_from_completion => 1 },
-        "dir"    => { alias => "list",       exclude_from_completion => 1 },
-        "rm"     => { alias => "delete",     exclude_from_completion => 1 },
-        "vi"     => { alias => "edit",       exclude_from_completion => 1 },
-        "less"   => { alias => "less",       exclude_from_completion => 1 },
-        "more"   => { alias => "less",       exclude_from_completion => 1 },
-        "touch"  => { alias => "edit",       exclude_from_completion => 1 },
-        "type"   => { alias => "cat",        exclude_from_completion => 1 },
-        "cp"     => { alias => "copy",       exclude_from_completion => 1 },
-        "mv"     => { alias => "move",       exclude_from_completion => 1 },
-        "set"    => { alias => "activate",   exclude_from_completion => 1 },
-        "unset"  => { alias => "deactivate", exclude_from_completion => 1 },
-    },
-);
-
-$term->{term}->ornaments(0);
-$term->run();
-
-sub cat {
-    my $content = "";
-    for my $script (@_) {
-        my $new_content = $sieve->getscript($script)
-          or die $sieve->error() . "\n";
-        $content .= $new_content;
-    }
-    print $content;
-}
-
-sub delete {
-    for my $script (@_) {
-        $sieve->deletescript($script) or die $sieve->error() . "\n";
-    }
-}
-
-sub view_script {
-    my $script = shift;
-    my ( $fh, $filename ) = $sieve->temp_scriptfile($script);
-    unless ($fh) { die $sieve->error() . "\n" }
-    my $pager = $ENV{'PAGER'} || "less";
-    system( $pager, $filename ) == 0 or die "$!\n";
-    close $fh;
-}
-
-sub edit_script {
-    my $script = shift;
-    my ( $fh, $filename ) = $sieve->temp_scriptfile( $script, 1 );
-    unless ($fh) { die $sieve->error() . "\n" }
-    my $editor = $ENV{'VISUAL'} || $ENV{'EDITOR'} || "vi";
-    do {
-        system( $editor, $filename ) == 0 or die "$!\n";
-      } until (
-        $sieve->putfile( $filename, $script )
-          || !do { print "$@\n"; prompt( "Re-edit script? ", -yn ) }
-      );
-    close $fh;
-
-}
-
-sub list_scripts {
-    my ( $scripts, $active ) = $sieve->listscripts()
-      or die $sieve->error() . "\n";
-    for my $script ( @{$scripts} ) {
-        my $marker = '';
-        $marker = ' *' if $script eq $active;
-        print "${script}${marker}\n";
-    }
-}
-
-sub complete_scripts {
-    my ( $self, $cmp ) = @_;
-    return [ grep { index( $_, $cmp->{str} ) == 0 }
-          @{ $sieve->listscripts() } ];
-}
+our $VERSION=0.09;
 
 sub equal_sep {
     my $file = shift;
@@ -234,6 +31,28 @@ sub equal_sep {
     }
     return \%config;
 }
+
+
+my %config;
+
+if ( my $filename = Config::Find->find ) {
+    %config = %{ equal_sep($filename) };
+}
+
+my $result = GetOptions( \%config,
+    'debug',
+    'user=s',
+    'host=s',
+    'port=s',
+    'tls=s',
+    'password=s',
+) or pod2usage(2);
+
+if(!$config{password}) {
+	$config{password} = prompt( "Password: ", -e => '*' );
+}
+
+App::Siesh->run(%config);
 
 0;
 
@@ -296,8 +115,9 @@ an equal sign.
 	port  = 2000
 	tls   = require
 	debug = 1
+	password = secret
 
-Currently only these two variables are recognized. Values are overriden
+Currently only these six options are recognized. Values are overriden
 by options specified on the command line.
 
 =head1 COMMANDS
