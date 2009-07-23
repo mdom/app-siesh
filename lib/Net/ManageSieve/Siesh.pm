@@ -117,7 +117,7 @@ sub view_script {
     my ($sieve,$script) = @_;
     my ( $fh, $filename ) = $sieve->temp_scriptfile($script);
     unless ($fh) { die $sieve->error() . "\n" }
-    my $pager = $ENV{'PAGER'} || "lesser";
+    my $pager = $ENV{'PAGER'} || "less";
 
     no warnings 'exec';
     if ( system( $pager, $filename ) != 0 ) {
