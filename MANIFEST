@@ -1,8 +1,10 @@
-bin/siesh
 Build.PL
-lib/Net/ManageSieve/Siesh.pm
-MANIFEST			This list of files
+MANIFEST
 META.yml
 README
 Makefile.PL
+bin/siesh
 lib/App/Siesh.pm
+lib/Net/ManageSieve/Siesh.pm
+t/00-load.t
+t/01-basic.t
