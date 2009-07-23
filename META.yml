@@ -1,6 +1,6 @@
 ---
 name: App-Siesh
-version: 0.10
+version: 0.11
 author:
   - 'Mario Domgoergen <dom@math.uni-bonn.de>'
 abstract: interactive sieve shell
