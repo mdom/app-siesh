@@ -7,10 +7,10 @@ use Term::ShellUI;
 use Net::ManageSieve::Siesh;
 use File::Temp qw/tempfile/;
 
-our $VERSION = 0.09
+our $VERSION = 0.09;
 
 sub run {
-    my ($class,%config) = @_;
+    my ( $class, %config ) = @_;
 
     # Set defaults for Net::ManageSieve::Siesh construction
     $config{user} ||= $ENV{USER};
@@ -84,19 +84,19 @@ sub run {
                 desc    => 'Examine the contents of a script using $PAGER.',
                 maxargs => 1,
                 proc    => sub { $sieve->view_script(shift) },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args    => sub { complete_scripts( @_, $sieve ) },
             },
             "delete" => {
                 desc    => "Delete a script from the server.",
                 minargs => 1,
                 proc    => sub { $sieve->delete(shift) },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args    => sub { complete_scripts( @_, $sieve ) },
             },
             "cat" => {
                 desc    => "Show the contents of a script on stdout.",
                 minargs => 1,
                 proc    => sub { $sieve->cat(shift) },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args    => sub { complete_scripts( @_, $sieve ) },
             },
             "copy" => {
                 desc    => 'Make a copy of a script under another name.',
@@ -104,7 +104,7 @@ sub run {
                 minargs => 2,
                 proc =>
                   sub { $sieve->copyscript(@_) or die $sieve->error() . "\n" },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args => sub { complete_scripts( @_, $sieve ) },
             },
             "move" => {
                 desc    => 'Rename a script on the server.',
@@ -112,14 +112,14 @@ sub run {
                 minargs => 2,
                 proc =>
                   sub { $sieve->movescript(@_) or die $sieve->error() . "\n" },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args => sub { complete_scripts( @_, $sieve ) },
             },
             "deactivate" => {
                 desc    => 'Mark the currently activated script as inactive.',
                 maxargs => 0,
                 proc =>
                   sub { $sieve->deactivate() or die $sieve->error() . "\n" },
-                args    => sub { complete_scripts(@_,$sieve) },
+                args => sub { complete_scripts( @_, $sieve ) },
             },
             "q"      => { alias => 'quit',       exclude_from_completion => 1 },
             "logout" => { alias => 'quit',       exclude_from_completion => 1 },
@@ -196,7 +196,8 @@ Specifies the remote port to connect to. Defaults to C<2000>.
 
 =item tls
 
-Specifies whether TLS is required ("require") or optional ("auto"). Defaults to unset, disabling TLS.
+Specifies whether TLS is required ("require") or optional
+("auto"). Defaults to unset, disabling TLS.
 
 =item password
 
@@ -217,18 +218,19 @@ Synonyms: B<ls>
 
 =item B<delete> I<script-name> I<...>
 
-Deletes a script. It's not possible to delete the currently active script, so please
-use deactivate first. There's no way to undelete a deleted script.
+Deletes a script. It's not possible to delete the currently active
+script, so please use deactivate first. There's no way to undelete a
+deleted script.
 
 Synonyms: B<rm>
 
 =item B<edit> I<script-name>
 
-Edits a script on the server without downloading it
-explicitly to your disk first. Under the hood it creates a temporary file,
-puts the script content in it and calls C<$ENV{EDITOR}> on it. After that
-the script is uploaded back. It's also possible to create and edit a
-new script with this command.
+Edits a script on the server without downloading it explicitly to your
+disk first. Under the hood it creates a temporary file, puts the script
+content in it and calls C<$ENV{EDITOR}> on it. After that the script is
+uploaded back. It's also possible to create and edit a new script with
+this command.
 
 If your script is syntactical incorrect, you will be prompted to
 re-edit the file or throw away your changes.
@@ -251,7 +253,8 @@ Print scripts on the standard output.
 
 =item B<quit>
 
-Terminates the sessiion with the remote SIEVE server. An end of file will also terminate the session and exit.
+Terminates the sessiion with the remote SIEVE server. An end of file
+will also terminate the session and exit.
 
 =item B<help>
 
