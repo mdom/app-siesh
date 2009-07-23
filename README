@@ -1,48 +1,40 @@
 NAME
-    siesh - interactive sieve shell
+    App::Siesh - interactive sieve shell
 
 SYNOPSIS
-    $ siesh --debug --user USER --host SERVER --tls {require|auto} --port
-    PORT
+            App::Siesh->run(
+                debug => 0,
+                user  => 'dom',
+                host  => 'imap',
+                tls   => 'require',
+                port  => '2000',
+                password => 'secret',
+            );
 
 DESCRIPTION
-    Siesh provides a shell-like interface for manipulating sieve scripts
-    using the ManageSieve protocol.
+    App::Siesh provides a shell-like interface for manipulating sieve
+    scripts using the ManageSieve protocol.
 
 OPTIONS
-    --debug|-d
+    debug
         Enable debugging.
 
-    --user|-u USERNAME
+    user
         Specifies the username to use when logging into the sieve server.
         This option defaults to the value of the environment variable
         "USER".
 
-    --host|-h HOST
+    host
         Specifies the machine to connect to. Defaults to "imap".
 
-    --port|-p PORT
+    port
         Specifies the remote port to connect to. Defaults to 2000.
 
-    --tls|-t {require|auto}
-        Specifies whether TLS is required ("require") or optional ("auto").
+    tls Specifies whether TLS is required ("require") or optional ("auto").
         Defaults to unset, disabling TLS.
 
-CONFIGURATION FILE
-    When siesh is invoked, it first reads configurations variables from
-    /etc/siesh.conf or ~/.siesh.conf if one of these files exist. The file
-    is structured as a set of lines with name and values seperated by an
-    equal sign.
-
-            user  = mario
-            host  = sieve.example.com
-            port  = 2000
-            tls   = require
-            debug = 1
-            password = secret
-
-    Currently only these six options are recognized. Values are overriden by
-    options specified on the command line.
+    password
+        Specifies the password to login.
 
 COMMANDS
     list
@@ -95,7 +87,7 @@ COMMANDS
         Retrieve a remote script and store it on the local machine.
 
 SEE ALSO
-    Net::ManageSieve::Siesh, Net::ManageSieve
+    siesh, Net::ManageSieve::Siesh, Net::ManageSieve
 
 COPYRIGHT & LICENSE
     Copyright 2008 Mario Domgoergen, all rights reserved.
