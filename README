@@ -89,6 +89,9 @@ COMMANDS
 SEE ALSO
     siesh, Net::ManageSieve::Siesh, Net::ManageSieve
 
+AUTHOR
+    Mario Domgoergen <dom@math.uni-bonn.de>
+
 COPYRIGHT & LICENSE
     Copyright 2008 Mario Domgoergen, all rights reserved.
 

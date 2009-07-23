@@ -1,5 +1,12 @@
 Revision history for App-Siesh
 
+0.09	2009-07-23
+	handles moving of active scripts correctly
+	created App::Siesh
+	split documentation between App::Siesh und siesh
+	added new --password paramter
+
+
 0.08    2009-07-23
 	added --debug and --tls command line options (by Darian Anthony Patrick)
 	corrected some typos
