@@ -155,7 +155,7 @@ __END__
 
 =head1 NAME
 
-siesh - interactive sieve shell
+App::Siesh - interactive sieve shell
 
 =head1 SYNOPSIS
 
