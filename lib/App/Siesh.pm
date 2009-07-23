@@ -72,13 +72,13 @@ sub run {
                 proc =>
                   sub { $sieve->setactive(shift) or die $sieve->error() . "\n" }
                 ,
-                args => \&complete_scripts,
+                args => sub { complete_scripts( @_, $sieve ) },
             },
             "edit" => {
                 desc    => 'Edit script using $EDITOR.',
                 maxargs => 1,
                 proc    => sub { $sieve->edit_script(shift) },
-                args    => \&complete_scripts,
+                args => sub { complete_scripts( @_, $sieve ) },
             },
             "view" => {
                 desc    => 'Examine the contents of a script using $PAGER.',
