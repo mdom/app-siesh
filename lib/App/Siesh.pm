@@ -251,6 +251,11 @@ filtering at all.
 
 Print scripts on the standard output.
 
+=item B<view> I<script-name>
+
+Calls $ENV{PAGER} or "less" on script. In case of any error, we fall
+back to use cat.
+
 =item B<quit>
 
 Terminates the sessiion with the remote SIEVE server. An end of file

@@ -117,9 +117,13 @@ sub view_script {
     my ($sieve,$script) = @_;
     my ( $fh, $filename ) = $sieve->temp_scriptfile($script);
     unless ($fh) { die $sieve->error() . "\n" }
-    my $pager = $ENV{'PAGER'} || "less";
-    system( $pager, $filename ) == 0 or die "$!\n";
-    close $fh;
+    my $pager = $ENV{'PAGER'} || "lesser";
+
+    no warnings 'exec';
+    if ( system( $pager, $filename ) != 0 ) {
+	print "Error calling your pager application: $!\nUsing cat as fallback.\n\n";
+	$sieve->cat($script);
+    }
 }
 
 sub edit_script {
