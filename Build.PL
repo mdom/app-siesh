@@ -4,6 +4,7 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     dist_name         => 'App-Siesh',
+    module_name       => 'App::Siesh',
     license           => 'perl',
     dist_author       => 'Mario Domgoergen <mario@domgoergen.com>',
     dist_version_from => 'bin/siesh',
@@ -19,12 +20,9 @@ my $builder = Module::Build->new(
     },
     build_requires     => { 'Test::More' => 0, },
     create_makefile_pl => 'passthrough',
-    create_readme     => 1,
-    meta_merge         => {
-        resources => {
-            repository => 'http://github.com/mdom/app-siesh',
-        },
-    }
+    create_readme      => 1,
+    meta_merge =>
+      { resources => { repository => 'http://github.com/mdom/app-siesh', }, },
 
 );
 
