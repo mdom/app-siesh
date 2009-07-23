@@ -294,7 +294,7 @@ an equal sign.
 	user  = mario
 	host  = sieve.example.com
 	port  = 2000
-	tls   = required
+	tls   = require
 	debug = 1
 
 Currently only these two variables are recognized. Values are overriden
