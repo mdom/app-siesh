@@ -5,3 +5,4 @@ MANIFEST			This list of files
 META.yml
 README
 Makefile.PL
+lib/App/Siesh.pm

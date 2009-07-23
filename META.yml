@@ -1,6 +1,6 @@
 ---
 name: App-Siesh
-version: 0.09
+version: 0.10
 author:
   - 'Mario Domgoergen <dom@math.uni-bonn.de>'
 abstract: interactive sieve shell
@@ -19,6 +19,9 @@ requires:
 build_requires:
   Test::More: 0
 provides:
+  App::Siesh:
+    file: lib/App/Siesh.pm
+    version: 0.10
   Net::ManageSieve::Siesh:
     file: lib/Net/ManageSieve/Siesh.pm
     version: 0.05

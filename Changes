@@ -1,5 +1,8 @@
 Revision history for App-Siesh
 
+0.10	2009-07-23
+	forget to add lib/App/Siesh.pm to MANIFEST
+
 0.09	2009-07-23
 	handles moving of active scripts correctly
 	created App::Siesh
