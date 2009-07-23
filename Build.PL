@@ -3,12 +3,8 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    dist_name         => 'App-Siesh',
     module_name       => 'App::Siesh',
     license           => 'perl',
-    dist_author       => 'Mario Domgoergen <mario@domgoergen.com>',
-    dist_version_from => 'bin/siesh',
-    dist_abstract     => 'interactive sieve shell',
     requires          => {
         'File::Temp'       => 0,
         'IO::Prompt'       => 0,
