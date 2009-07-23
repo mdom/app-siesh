@@ -14,6 +14,7 @@ requires:
   IO::Prompt: 0
   IO::Socket::SSL: 0
   Net::ManageSieve: 0
+  Pod::Usage: 0
   Term::ShellUI: 0
   parent: 0
 build_requires:
