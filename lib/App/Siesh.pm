@@ -6,6 +6,7 @@ use warnings;
 use Term::ShellUI;
 use Net::ManageSieve::Siesh;
 use File::Temp qw/tempfile/;
+use App::Siesh::Batch;
 
 our $VERSION = '0.11';
 
@@ -31,7 +32,13 @@ sub run {
 
     $sieve->auth( $config{user}, $config{password} ) or die "$@\n";
 
+    my %shellui_params;
+    if ($config{command}) {
+	$shellui_params{term} = App::Siesh::Batch->new(@{$config{command}});
+    }
+
     my $term = new Term::ShellUI(
+	%shellui_params,
         history_file => '~/.siesh_history',
         prompt       => 'siesh> ',
         commands     => {
@@ -138,6 +145,7 @@ sub run {
             "unset"  => { alias => "deactivate", exclude_from_completion => 1 },
         },
     );
+    
 
     $term->{term}->ornaments(0);
     $term->run();

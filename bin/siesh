@@ -45,6 +45,7 @@ my $result = GetOptions( \%config,
     'port=s',
     'tls=s',
     'password=s',
+    'command=s@',
 ) or pod2usage(2);
 
 if(!$config{password}) {
@@ -70,6 +71,7 @@ siesh - interactive sieve shell
     --tls {require|auto} 
     --port PORT
     --password PASSWORD
+    --command COMMAND
 
 =head1 DESCRIPTION
 
