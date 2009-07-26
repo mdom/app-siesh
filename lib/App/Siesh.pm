@@ -15,16 +15,19 @@ sub run {
     # Set defaults for Net::ManageSieve::Siesh construction
     $config{user} ||= $ENV{USER};
     $config{host} ||= 'imap';
+    $config{tls}  ||= 'auto';
 
-    my @params = ();
+    my @params;
 
-    foreach ( 'debug', 'port' ) {
+    foreach ( qw(debug port) ) {
         push @params, ucfirst($_), $config{$_}
           if defined $config{$_};
     }
 
-    push @params, 'tls', $config{'tls'}
-      if defined $config{'tls'};
+    ## Okay, this is counterintuative ... tls is the only options
+    ## for Net::ManageSieve contruction not ucfirsted.
+    ## TODO: Send in a patch
+    push @params, tls => $config{tls};
 
     my $sieve = Net::ManageSieve::Siesh->new( $config{host}, @params )
       or die "Can't connect to $config{host}: $!\n";
