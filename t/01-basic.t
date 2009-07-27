@@ -51,8 +51,12 @@ else {
 
     my ( $fh, $tempfile ) = tempfile( UNLINK => 1 );
     my $filter;
-    { $/ = undef; $filter = <DATA>; }
-    print {$fh} $filter;
+    {
+        local $/ = undef;
+        $filter = <DATA>;
+        print {$fh} $filter;
+        close $fh;
+    }
 
 
     ok(
