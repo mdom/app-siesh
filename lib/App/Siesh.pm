@@ -139,9 +139,7 @@ sub run {
             "dir"    => { alias => "list",       exclude_from_completion => 1 },
             "rm"     => { alias => "delete",     exclude_from_completion => 1 },
             "vi"     => { alias => "edit",       exclude_from_completion => 1 },
-            "less"   => { alias => "less",       exclude_from_completion => 1 },
             "more"   => { alias => "less",       exclude_from_completion => 1 },
-            "touch"  => { alias => "edit",       exclude_from_completion => 1 },
             "type"   => { alias => "cat",        exclude_from_completion => 1 },
             "cp"     => { alias => "copy",       exclude_from_completion => 1 },
             "mv"     => { alias => "move",       exclude_from_completion => 1 },
@@ -181,8 +179,9 @@ App::Siesh - interactive sieve shell
 
 =head1 DESCRIPTION
 
-App::Siesh provides a shell-like interface for manipulating sieve scripts
-using the ManageSieve protocol.
+App::Siesh provides a shell-like interface for manipulating sieve
+scripts using the ManageSieve protocol. If you search a command
+line utility, take a look at L<siesh>.
 
 =head1 OPTIONS
 
@@ -230,7 +229,7 @@ Specifies the password to login.
 Prints a list of all scripts on the server. The currently active script,
 if any, is marked by a I<*> (astersik).
 
-Synonyms: B<ls>
+Synonyms: B<ls>, B<dir>
 
 =item B<delete> I<script-name> I<...>
 
@@ -251,6 +250,23 @@ this command.
 If your script is syntactical incorrect, you will be prompted to
 re-edit the file or throw away your changes.
 
+Synonyms: B<vi>
+
+=item B<copy> I<script-name> I<script-name>
+
+Copies the contents of the source script-name to a target  script.
+The contents of the target script are overridden.
+
+Synonyms: B<cp>
+
+=item B<move> I<script-name> I<script-name>
+
+Moves script to a destination script. The destination script is
+overridden.
+
+Synonyms: B<mv>
+
+
 =item B<activate> I<script-name>
 
 Activates the listed script. User may have multiple Sieve scripts on
@@ -258,28 +274,40 @@ the server, yet only one script may be used for filtering of incoming
 messages. This is called the active script. Users may have zero or one
 active scripts
 
+Synonyms: B<set>
+
 =item B<deactivate>
 
 Deactivate all scripts. Deactivation of all your scripts results in no
 filtering at all.
 
+Synonyms: B<unset>
+
 =item B<cat> I<script-name> 
 
 Print script on the standard output.
+
+Synonyms: B<type>
 
 =item B<view> I<script-name>
 
 Calls $ENV{PAGER} or "less" on script. In case of any error, we fall
 back to use cat.
 
+Synonyms: B<more>
+
 =item B<quit>
 
 Terminates the sessiion with the remote SIEVE server. An end of file
 will also terminate the session and exit.
 
+Synonyms: B<q>, B<logout>
+
 =item B<help>
 
 Print a short description of all commands.
+
+Synonyms: B<h>
 
 =item B<put> I<file-name> I<script-name>
 
