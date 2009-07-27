@@ -49,6 +49,8 @@ sub putfile {
     open( my $fh, '<', $file ) or $self->error($!);
     { $/ = undef, $script = <$fh> }
     close $fh;
+    my $length = length $script;
+    $self->havespace($name, $length) or return $self->error($@);
     $self->putscript( $name, $script ) or $self->error($@);
 }
 
