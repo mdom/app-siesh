@@ -66,20 +66,19 @@ sub listscripts {
     unless ( @scripts = @ {$self->SUPER::listscripts() } ) {
         return $self->error($@);
     }
-    delete $scripts[-1];
+    my $active = delete $scripts[-1];
     if ($unactive) {
-        my $active = $self->get_active();
     	@scripts = grep { $_ ne $active } @scripts;
     }
-    return @scripts
+    return @scripts;
 }
 
 sub print_script_listing {
     my $sieve = shift;
     my @scripts = $sieve->listscripts(1) or die $sieve->error() . "\n";
     my $active  = $sieve->get_active();
-    print $active . " *\n";
-    print join("\n",sort @scripts);
+    print $active . " *\n" if $active;
+    print join("\n",sort @scripts) . "\n";
 }
 
 sub error {
@@ -127,8 +126,8 @@ sub edit_script {
 }
 
 sub activate {
-	my ($self,$script) = @_;
-	$self->setactive($script) or $self->error($@);
+    my ( $self, $script ) = @_;
+    $self->setactive($script) or $self->error($@);
 }
 
 sub deactivate {
