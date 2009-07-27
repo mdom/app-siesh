@@ -65,7 +65,8 @@ sub getfile {
 sub listscripts {
     my ($self,$unactive) = @_;
     my (@scripts);
-    unless ( @scripts = @ {$self->SUPER::listscripts() } ) {
+    @scripts = @{ $self->SUPER::listscripts() };
+    if ($@) {
         return $self->error($@);
     }
     my $active = delete $scripts[-1];

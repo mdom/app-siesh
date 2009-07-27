@@ -73,10 +73,13 @@ sub run {
                 desc    => "List all scripts stored on the server.",
                 maxargs => 0,
                 proc    => sub {
-    			my @scripts = $sieve->listscripts(1) or die $sieve->error() . "\n";
     			my $active  = $sieve->get_active();
+    			my @scripts = $sieve->listscripts(1);
+			if ($@) {
+				die $sieve->error() . "\n";
+			}
     			print $active . " *\n" if $active;
-    			print join("\n",sort @scripts) . "\n";
+    			print join("\n",sort @scripts) . "\n" if @scripts;
 		},
             },
             "activate" => {
