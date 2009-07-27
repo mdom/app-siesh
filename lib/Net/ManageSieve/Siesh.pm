@@ -73,14 +73,6 @@ sub listscripts {
     return @scripts;
 }
 
-sub print_script_listing {
-    my $sieve = shift;
-    my @scripts = $sieve->listscripts(1) or die $sieve->error() . "\n";
-    my $active  = $sieve->get_active();
-    print $active . " *\n" if $active;
-    print join("\n",sort @scripts) . "\n";
-}
-
 sub error {
     my ( $self, $error ) = @_;
     if ( defined($error) ) {
