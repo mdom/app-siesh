@@ -36,8 +36,8 @@ sub run {
     $sieve->auth( $config{user}, $config{password} ) or die "$@\n";
 
     my %shellui_params;
-    if ($config{command}) {
-	$shellui_params{term} = App::Siesh::Batch->new(@{$config{command}});
+    if ($config{file}) {
+	$shellui_params{term} = App::Siesh::Batch->new($config{file});
     }
 
     my $term = new Term::ShellUI(
@@ -209,6 +209,11 @@ Specifies the remote port to connect to. Defaults to C<2000>.
 
 Specifies whether TLS is required ("require") or optional
 ("auto"). Defaults to unset, disabling TLS.
+
+=item file
+
+If an IO::Handle object is provdided, App::Siesh won't read commands
+from the command line prompt, but from that filehandle.
 
 =item password
 
