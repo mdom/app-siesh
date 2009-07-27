@@ -61,24 +61,25 @@ sub getfile {
 }
 
 sub listscripts {
-    my $self = shift;
-    my ($scripts);
-    unless ( $scripts = $self->SUPER::listscripts() ) {
-        $self->error($@);
+    my ($self,$unactive) = @_;
+    my (@scripts);
+    unless ( @scripts = @ {$self->SUPER::listscripts() } ) {
+        return $self->error($@);
     }
-    my $active = pop @{$scripts};
-    return wantarray ? ( $scripts, $active ) : $scripts;
+    delete $scripts[-1];
+    if ($unactive) {
+        my $active = $self->get_active();
+    	@scripts = grep { $_ ne $active } @scripts;
+    }
+    return @scripts
 }
 
 sub print_script_listing {
     my $sieve = shift;
-    my ( $scripts, $active ) = $sieve->listscripts()
-      or die $sieve->error() . "\n";
-    for my $script ( @{$scripts} ) {
-        my $marker = '';
-        $marker = ' *' if $script eq $active;
-        print "${script}${marker}\n";
-    }
+    my @scripts = $sieve->listscripts(1) or die $sieve->error() . "\n";
+    my $active  = $sieve->get_active();
+    print $active . " *\n";
+    print join("\n",sort @scripts);
 }
 
 sub error {
@@ -135,15 +136,14 @@ sub deactivate {
     $self->setactive("") or $self->error($@);
 }
 
-sub get_active {
-	my ($self) = @_;
-	my (undef,$active) = $self->listscripts();
-	return $active;
-}
-
 sub is_active {
 	my ($self,$script) = @_;
 	return $self->get_active() eq $script;
+}
+
+sub get_active {
+	my ($self) = @_;
+	return $self->SUPER::listscripts()->[-1];
 }
 
 1;    # End of Net::ManageSieve::Siesh
@@ -185,6 +185,11 @@ Deactivates all active scripts on the server. This has
 the same effect as using the function setactive with an empty string
 as argument.
 
+=item C<activate()>
+
+Activates the scripts. This is identical to call setactive, but is easier
+to remember.
+
 =item C<movescript($oldscriptname,$newscriptname)>
 
 Renames the script. This functions is equivalent to copying a script and
@@ -213,11 +218,11 @@ Downloads the script names <$scriptname> to the file specified by C<$file>.
 
 =item C<listscripts()>
 
-Returns a list of scripts and the active script. This function overwrites
-listscripts provided by Net::ManageSieve in order to return a more
-sane data structure. It returns a reference to an array, that holds all
-scripts, and a scalar with the name of the active script in list context
-and just the array reference in scalar context.  =item C<error()>
+Returns a list of scripts. This function overwrites listscripts provided
+by Net::ManageSieve in order to return a more sane data structure. If
+the first paramter is true only the active script is not returned.
+
+=item C<error()>
 
 Returns $@ or $! of a previous failed method. Please notice, that this
 method overwrites the method of the same name in C<Net::ManageSieve>

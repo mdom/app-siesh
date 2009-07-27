@@ -39,7 +39,7 @@ if ($@) {
 }
 else {
 
-    plan tests => 9;
+    plan tests => 14;
 
     ## These UUIDs were generate by
     ## http://www.famkruithof.net/uuid/uuidgen and are provided in the
@@ -77,6 +77,15 @@ else {
     ok ( ! script_exists($sieve,$scriptnames[0]), 'script was really moved');
 
     ok( $sieve->getfile( $scriptnames[1], $tempfile ), 'downloading script' );
+
+    ok( ! $sieve->is_active($scriptnames[1]), "$scriptnames[1] is not active");
+    ok(   $sieve->activate($scriptnames[1]), "activating $scriptnames[1]");
+
+    ok(   $sieve->is_active($scriptnames[1]), "$scriptnames[1] is really active");
+    ok(   $sieve->deactivate($scriptnames[1]), "deactivating $scriptnames[1]");
+    ok( ! $sieve->is_active($scriptnames[1]), "$scriptnames[1] is really deactive");
+
+    is( $sieve->cat($scriptnames[1]), '# This filter does nothing at all', 'catting testscript');
 
     for (@scriptnames) {
         $sieve->deletescript($_);
