@@ -3,9 +3,9 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name       => 'App::Siesh',
-    license           => 'perl',
-    requires          => {
+    module_name => 'App::Siesh',
+    license     => 'perl',
+    requires    => {
         'File::Temp'       => 0,
         'IO::Prompt'       => 0,
         'Term::ShellUI'    => 0,
@@ -14,6 +14,9 @@ my $builder = Module::Build->new(
         'Config::Find'     => 0,
         'parent'           => 0,
         'Pod::Usage'       => 0,
+        'IO::Interactive'  => 0,
+        'IO::Handle'       => 0,
+        'IO::File'         => 0,
     },
     build_requires     => { 'Test::More' => 0, },
     create_makefile_pl => 'passthrough',
