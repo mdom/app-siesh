@@ -100,7 +100,7 @@ siesh - interactive sieve shell
     --debug 
     --user USER 
     --host SERVER 
-    --tls {require|auto} 
+    --tls {require|auto|off} 
     --port PORT
     --password PASSWORD
     --command COMMAND
@@ -134,10 +134,10 @@ Specifies the machine to connect to. Defaults to C<imap>.
 
 Specifies the remote port to connect to. Defaults to C<2000>.
 
-=item B<--tls>|B<-t> {require|auto}
+=item B<--tls>|B<-t> {require|auto|off}
 
-Specifies whether TLS is required ("require") or optional
-("auto"). Defaults to unset, disabling TLS.
+Specifies whether TLS is required ("require"), optional
+("auto"), or disabled ("off"). Defaults to "auto".
 
 =item B<--password> PASSWORD
 
