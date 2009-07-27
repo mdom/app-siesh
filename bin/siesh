@@ -36,13 +36,9 @@ sub equal_sep {
 }
 
 
-my %config;
+my (%config, %configfile, %commandline);
 
-if ( my $filename = Config::Find->find ) {
-    %config = %{ equal_sep($filename) };
-}
-
-my $result = GetOptions( \%config,
+my $result = GetOptions( \%commandline,
     'debug',
     'user=s',
     'host=s',
@@ -51,7 +47,16 @@ my $result = GetOptions( \%config,
     'password=s',
     'command=s@',
     'file=s',
+    'config=s',
 ) or pod2usage(2);
+
+my $file = $commandline{'config'} ||  Config::Find->find;
+
+if ($file) {
+	%configfile = %{ equal_sep($file) };
+}
+
+%config = ( %configfile, %commandline );
 
 if(!$config{password}) {
 	$config{password} = prompt( "Password: ", -e => '*' );
@@ -150,14 +155,19 @@ COMMAND is a acceptable command as entered on the shell prompt. This
 option maybe provided more than once. It it ignored if batch commands
 are passed in via --file or STDIN.
 
+=item B<--config> FILE
+
+If specified, configuration options are read from this file instead
+of that returned by L<Config::Find>.
+
 =back
 
 =head1 CONFIGURATION FILE
 
 When siesh is invoked, it first reads configurations variables from
-F</etc/siesh.conf> or F<~/.siesh.conf> if one of these files exist. The
-file is structured as a set of lines with name and values seperated by
-an equal sign.
+F</etc/siesh.conf> or F<~/.siesh.conf> (or whatever L<Config::Find>
+returns) if one of these files exist. The file is structured as a
+set of lines with name and values seperated by an equal sign.
 
 	user     = mario
 	host     = sieve.example.com
