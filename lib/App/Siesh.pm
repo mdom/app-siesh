@@ -152,8 +152,7 @@ sub run {
 
 sub complete_scripts {
     my ( $self, $cmp, $sieve ) = @_;
-    return [ grep { index( $_, $cmp->{str} ) == 0 }
-          @{ $sieve->listscripts() } ];
+    return [ grep { index( $_, $cmp->{str} ) == 0 } $sieve->listscripts()  ];
 }
 
 1;

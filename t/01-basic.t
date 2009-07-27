@@ -28,7 +28,7 @@ sub read_configfile {
 
 sub script_exists {
     my ( $self, $scriptname ) = @_;
-    my %script = map { $_ => 1 } @{ $self->listscripts };
+    my %script = map { $_ => 1 } $self->listscripts ;
     return defined( $script{$scriptname} );
 }
 
@@ -84,8 +84,6 @@ else {
     ok(   $sieve->is_active($scriptnames[1]), "$scriptnames[1] is really active");
     ok(   $sieve->deactivate($scriptnames[1]), "deactivating $scriptnames[1]");
     ok( ! $sieve->is_active($scriptnames[1]), "$scriptnames[1] is really deactive");
-
-    is( $sieve->cat($scriptnames[1]), '# This filter does nothing at all', 'catting testscript');
 
     for (@scriptnames) {
         $sieve->deletescript($_);
