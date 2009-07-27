@@ -88,7 +88,7 @@ sub run {
                 desc    => 'Edit script using $EDITOR.',
                 maxargs => 1,
                 proc    => sub { $sieve->edit_script(shift) },
-                args => sub { complete_scripts( @_, $sieve ) },
+                args    => sub { complete_scripts( @_, $sieve ) },
             },
             "view" => {
                 desc    => 'Examine the contents of a script using $PAGER.',
@@ -104,8 +104,8 @@ sub run {
             },
             "cat" => {
                 desc    => "Show the contents of a script on stdout.",
-                minargs => 1,
-                proc    => sub { $sieve->cat(shift) },
+                maxargs => 1,
+                proc    => sub { print $sieve->getscript(shift) or die $sieve->error() . "\n" },
                 args    => sub { complete_scripts( @_, $sieve ) },
             },
             "copy" => {
@@ -263,9 +263,9 @@ active scripts
 Deactivate all scripts. Deactivation of all your scripts results in no
 filtering at all.
 
-=item B<cat> I<script-name> I<...>
+=item B<cat> I<script-name> 
 
-Print scripts on the standard output.
+Print script on the standard output.
 
 =item B<view> I<script-name>
 

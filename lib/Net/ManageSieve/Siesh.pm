@@ -9,11 +9,6 @@ use parent qw(Net::ManageSieve);
 
 our $VERSION = '0.05';
 
-sub deactivate {
-    my $self = shift;
-    $self->setactive("") or $self->error($@);
-}
-
 sub movescript {
     my ( $self, $source, $target ) = @_;
     my $is_active = $self->is_active($source);
@@ -95,17 +90,6 @@ sub error {
     return $self->{_last_error};
 }
 
-sub cat {
-    my $sieve = shift;
-    my $content = "";
-    for my $script (@_) {
-        my $new_content = $sieve->getscript($script)
-          or die $sieve->error() . "\n";
-        $content .= $new_content;
-    }
-    print $content;
-}
-
 sub delete {
     my $sieve = shift;
     for my $script (@_) {
@@ -139,6 +123,16 @@ sub edit_script {
       );
     close $fh;
 
+}
+
+sub activate {
+	my ($self,$script) = @_;
+	$self->setactive($script) or $self->error($@);
+}
+
+sub deactivate {
+    my $self = shift;
+    $self->setactive("") or $self->error($@);
 }
 
 sub get_active {
