@@ -54,17 +54,15 @@ sub run {
                 desc    => 'Upload a script onto the server.',
                 maxargs => 2,
                 minargs => 2,
-                proc =>
-                  sub { $sieve->putfile(@_) or die $sieve->error() . "\n" },
+                proc => sub { $sieve->putfile(@_) or die $sieve->error() . "\n" },
                 args => sub { shift->complete_files(@_); },
             },
             "get" => {
                 desc    => "Fetch a script from the server and store locally.",
                 maxargs => 2,
                 minargs => 2,
-                proc =>
-                  sub { $sieve->getfile(@_) or die $sieve->error() . "\n" },
-                args => sub { shift->complete_files(@_); },
+                proc    => sub { $sieve->getfile(@_) or die $sieve->error() . "\n" },
+                args    => sub { shift->complete_files(@_); },
             },
             "quit" => {
                 desc    => "Quit siesh.",
@@ -79,8 +77,7 @@ sub run {
             "activate" => {
                 desc    => "Mark a script as active.",
                 maxargs => 1,
-                proc =>
-                  sub { $sieve->setactive(shift) or die $sieve->error() . "\n" }
+                proc    => sub { $sieve->setactive(shift) or die $sieve->error() . "\n" }
                 ,
                 args => sub { complete_scripts( @_, $sieve ) },
             },
@@ -127,9 +124,8 @@ sub run {
             "deactivate" => {
                 desc    => 'Mark the currently activated script as inactive.',
                 maxargs => 0,
-                proc =>
-                  sub { $sieve->deactivate() or die $sieve->error() . "\n" },
-                args => sub { complete_scripts( @_, $sieve ) },
+                proc    => sub { $sieve->deactivate() or die $sieve->error() . "\n" },
+                args    => sub { complete_scripts( @_, $sieve ) },
             },
             "q"      => { alias => 'quit',       exclude_from_completion => 1 },
             "logout" => { alias => 'quit',       exclude_from_completion => 1 },
