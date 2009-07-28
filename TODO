@@ -1,0 +1,6 @@
+* add better ssl debugging by dap
+* debugginglevel
+* testing with IPC::Run3 and batch mode
+* using normal configuration file for testing
+* use autodie
+* send patch for on_fail => die to Net::ManageSieve
