@@ -7,8 +7,6 @@ use Net::ManageSieve;
 use IO::Prompt;
 use parent qw(Net::ManageSieve);
 
-our $VERSION = '0.05';
-
 sub movescript {
     my ( $self, $source, $target ) = @_;
     my $is_active = $self->is_active($source);
@@ -17,7 +15,7 @@ sub movescript {
     $self->deactivate() if $is_active;
 
     $self->copyscript( $source, $target );
-    $self->deletescript($source) or $self->error($@);
+    $self->deletescript($source) ;
 
     ## ... and activate the target later
     $self->setactive($target) if $is_active;
@@ -26,8 +24,8 @@ sub movescript {
 
 sub copyscript {
     my ( $self, $source, $target ) = @_;
-    my $content = $self->getscript($source) or $self->error($@);
-    $self->putscript( $target, $content ) or $self->error($@);
+    my $content = $self->getscript($source);
+    $self->putscript( $target, $content );
 }
 
 sub temp_scriptfile {
@@ -35,30 +33,33 @@ sub temp_scriptfile {
     my ( $fh, $filename ) = tempfile( UNLINK => 1 );
     if ( !$fh ) { $self->error($@); }
 
-    my $content = $self->getscript($script);
-    if ( !defined($content) and !$create ) { $self->error($@); }
+    my $content = '';
+    if ($self->script_exists($script)) {
+        $content = $self->getscript($script);
+    } elsif (!$create) {
+	die "Script $script does not exists.\n";
+    }
 
-    $content ||= '';
-    print {$fh} $content or $self->error($!);
+    print {$fh} $content or die "$!\n";
     return $fh, $filename;
 }
 
 sub putfile {
     my ( $self, $file, $name ) = @_;
     my $script;
-    open( my $fh, '<', $file ) or $self->error($!);
+    open( my $fh, '<', $file ) or die "$!\n";
     { $/ = undef, $script = <$fh> }
     close $fh;
     my $length = length $script;
-    $self->havespace($name, $length) or return $self->error($@);
-    $self->putscript( $name, $script ) or $self->error($@);
+    $self->havespace($name, $length);
+    $self->putscript( $name, $script );
 }
 
 sub getfile {
     my ( $self, $name, $file ) = @_;
-    my $script = $self->getscript($name) or $self->error($@);
-    open( my $fh, '>', $file ) or $self->error($!);
-    print {$fh} $script or $self->error($!);
+    my $script = $self->getscript($name);
+    open( my $fh, '>', $file );
+    print {$fh} $script or die "$!\n";
     close $fh;
 }
 
@@ -66,23 +67,11 @@ sub listscripts {
     my ($self,$unactive) = @_;
     my (@scripts);
     @scripts = @{ $self->SUPER::listscripts() };
-    if ($@) {
-        return $self->error($@);
-    }
     my $active = delete $scripts[-1];
     if ($unactive) {
     	@scripts = grep { $_ ne $active } @scripts;
     }
     return @scripts;
-}
-
-sub error {
-    my ( $self, $error ) = @_;
-    if ( defined($error) ) {
-        $self->_set_error($error);
-        return undef;
-    }
-    return $self->{_last_error};
 }
 
 sub delete {
@@ -108,7 +97,6 @@ sub view_script {
 sub edit_script {
     my ($sieve,$script) = @_;
     my ( $fh, $filename ) = $sieve->temp_scriptfile( $script, 1 );
-    unless ($fh) { die $sieve->error() . "\n" }
     my $editor = $ENV{'VISUAL'} || $ENV{'EDITOR'} || "vi";
     do {
         system( $editor, $filename ) == 0 or die "$!\n";
@@ -122,22 +110,33 @@ sub edit_script {
 
 sub activate {
     my ( $self, $script ) = @_;
-    $self->setactive($script) or $self->error($@);
+    $self->setactive($script);
 }
 
 sub deactivate {
     my $self = shift;
-    $self->setactive("") or $self->error($@);
+    $self->setactive("");
 }
 
 sub is_active {
-	my ($self,$script) = @_;
-	return $self->get_active() eq $script;
+    my ( $self, $script ) = @_;
+    return $self->get_active() eq $script;
 }
 
 sub get_active {
-	my ($self) = @_;
-	return $self->SUPER::listscripts()->[-1];
+    my ($self) = @_;
+    return $self->SUPER::listscripts()->[-1];
+}
+
+sub script_exists {
+    my ( $self, $scriptname ) = @_;
+    my %script = map { $_ => 1 } $self->listscripts;
+    return defined( $script{$scriptname} );
+}
+
+sub _set_error {
+    my ( $self, $error ) = @_;
+    die $error . "\n";
 }
 
 1;    # End of Net::ManageSieve::Siesh
@@ -168,6 +167,10 @@ deactivating scripts, copy and move them etc.
 
 If you're just searching for a comamnd line interface to ManageSieve,
 please take a look at C<siesh(1)>.
+
+=head1 ERROR HANDLING
+
+Unlike L<Net::ManagieSieve> this library just croaks in the case of error. Nothing wrong with that!
 
 =head1 METHODS
 
@@ -212,15 +215,10 @@ Downloads the script names <$scriptname> to the file specified by C<$file>.
 
 =item C<listscripts()>
 
-Returns a list of scripts. This function overwrites listscripts provided
-by Net::ManageSieve in order to return a more sane data structure. If
-the first paramter is true only the active script is not returned.
-
-=item C<error()>
-
-Returns $@ or $! of a previous failed method. Please notice, that this
-method overwrites the method of the same name in C<Net::ManageSieve>
-and just returns the error mesage itself.
+Returns a list of scripts. This function overwrites listscripts
+provided by Net::ManageSieve in order to return a array. To get the
+active script call get_active. If the first paramter is true only
+the active script is not returned.
 
 =item C<is_active($script)>
 
@@ -230,6 +228,10 @@ Returns true if $script is the currently active script and false if not.
 
 Returns the name of the currently active script and the empty string if
 there is not active script.
+
+=item C<script_exists($script)>
+
+Check if $script exists on server.
 
 =back
 

@@ -54,7 +54,7 @@ sub run {
                 desc    => 'Upload a script onto the server.',
                 maxargs => 2,
                 minargs => 2,
-                proc => sub { $sieve->putfile(@_) or die $sieve->error() . "\n" },
+                proc => sub { $sieve->putfile(@_) },
                 args => sub { shift->complete_files(@_); },
             },
             "get" => {
@@ -75,9 +75,6 @@ sub run {
                 proc    => sub {
     			my $active  = $sieve->get_active();
     			my @scripts = $sieve->listscripts(1);
-			if ($@) {
-				die $sieve->error() . "\n";
-			}
     			print $active . " *\n" if $active;
     			print join("\n",sort @scripts) . "\n" if @scripts;
 		},
@@ -85,7 +82,7 @@ sub run {
             "activate" => {
                 desc    => "Mark a script as active.",
                 maxargs => 1,
-                proc    => sub { $sieve->setactive(shift) or die $sieve->error() . "\n" }
+                proc    => sub { $sieve->setactive(shift) }
                 ,
                 args => sub { complete_scripts( @_, $sieve ) },
             },
@@ -110,7 +107,7 @@ sub run {
             "cat" => {
                 desc    => "Show the contents of a script on stdout.",
                 maxargs => 1,
-                proc    => sub { print $sieve->getscript(shift) or die $sieve->error() . "\n" },
+                proc    => sub { print $sieve->getscript(shift) },
                 args    => sub { complete_scripts( @_, $sieve ) },
             },
             "copy" => {
@@ -118,7 +115,7 @@ sub run {
                 maxargs => 2,
                 minargs => 2,
                 proc =>
-                  sub { $sieve->copyscript(@_) or die $sieve->error() . "\n" },
+                  sub { $sieve->copyscript(@_) },
                 args => sub { complete_scripts( @_, $sieve ) },
             },
             "move" => {
@@ -126,13 +123,13 @@ sub run {
                 maxargs => 2,
                 minargs => 2,
                 proc =>
-                  sub { $sieve->movescript(@_) or die $sieve->error() . "\n" },
+                  sub { $sieve->movescript(@_) },
                 args => sub { complete_scripts( @_, $sieve ) },
             },
             "deactivate" => {
                 desc    => 'Mark the currently activated script as inactive.',
                 maxargs => 0,
-                proc    => sub { $sieve->deactivate() or die $sieve->error() . "\n" },
+                proc    => sub { $sieve->deactivate() },
                 args    => sub { complete_scripts( @_, $sieve ) },
             },
             "q"      => { alias => 'quit',       exclude_from_completion => 1 },
