@@ -7,6 +7,17 @@ use Net::ManageSieve;
 use IO::Prompt;
 use parent qw(Net::ManageSieve);
 
+sub starttls {
+        my $self = shift;
+        if ($self->debug()) {
+		eval { require IO::Socket::SSL;  IO::Socket::SSL->import qw(debug3); };
+		if ($@) {
+			die "Cannot load module IO::Socket::SSL\n";
+		}
+	}
+        $self->SUPER::starttls(@_);
+}
+
 sub movescript {
     my ( $self, $source, $target ) = @_;
     my $is_active = $self->is_active($source);
