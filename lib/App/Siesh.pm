@@ -101,7 +101,14 @@ sub run {
             "delete" => {
                 desc    => "Delete a script from the server.",
                 minargs => 1,
-                proc    => sub { $sieve->delete(@_) },
+                proc    => sub { 
+			if ( $_[0] eq '*' ) {
+				$sieve->deactivate();
+				$sieve->delete($sieve->listscripts);
+			} else {
+				$sieve->delete(@_);
+			}
+		},
                 args    => sub { complete_scripts( @_, $sieve ) },
             },
             "cat" => {
@@ -233,9 +240,12 @@ Synonyms: B<ls>, B<dir>
 
 =item B<delete> I<script-name> I<...>
 
-Deletes a script. It's not possible to delete the currently active
+Deletes all listed scripts. It's not possible to delete the currently active
 script, so please use deactivate first. There's no way to undelete a
 deleted script.
+
+If you specify I<*> (asterisk) as first argument to delete, the active
+script is deactivated and B<all> scripts are deleted.
 
 Synonyms: B<rm>
 
