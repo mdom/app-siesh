@@ -26,12 +26,6 @@ sub read_configfile {
     return $config;
 }
 
-sub script_exists {
-    my ( $self, $scriptname ) = @_;
-    my %script = map { $_ => 1 } $self->listscripts ;
-    return defined( $script{$scriptname} );
-}
-
 my $config = eval { read_configfile 't/conf.pl' };
 
 if ($@) {
@@ -67,18 +61,18 @@ else {
     ok( $sieve->login( $config->{user}, $config->{password} ), 'logging in' );
 
     for (@scriptnames) {
-	if (script_exists($sieve,$_)) {
+	if ($sieve->script_exists($_)) {
         	BAIL_OUT( "$_ already exist on the server, that's very unlikely!");
 	}
     }
 
     ok( $sieve->putfile( $tempfile, $scriptnames[0] ), 'uploading script' );
-    ok ( script_exists($sieve,$scriptnames[0]), 'script was really uploaded');
+    ok ( $sieve->script_exists($scriptnames[0]), 'script was really uploaded');
     ok( $sieve->copyscript( $scriptnames[0], $scriptnames[1] ), 'copying script' );
-    ok ( script_exists($sieve,$scriptnames[1]), 'script was really copied');
+    ok ( $sieve->script_exists($scriptnames[1]), 'script was really copied');
     ok( $sieve->movescript( $scriptnames[0], $scriptnames[1] ),
         'renaming script' );
-    ok ( ! script_exists($sieve,$scriptnames[0]), 'script was really moved');
+    ok ( ! $sieve->script_exists($scriptnames[0]), 'script was really moved');
 
     ok( $sieve->getfile( $scriptnames[1], $tempfile ), 'downloading script' );
 
@@ -90,7 +84,7 @@ else {
     ok( ! $sieve->is_active($scriptnames[1]), "$scriptnames[1] is really deactive");
 
     for (@scriptnames) {
-        $sieve->deletescript($_);
+        $sieve->deletescript($_) if $sieve->script_exists($_);
     }
 }
 
