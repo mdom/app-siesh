@@ -251,6 +251,10 @@ there is not active script.
 
 Check if $script exists on server.
 
+=item C<delete(@scripts)>
+
+Delete all @scripts.
+
 =back
 
 =head1 AUTHOR

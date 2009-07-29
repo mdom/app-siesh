@@ -101,7 +101,7 @@ sub run {
             "delete" => {
                 desc    => "Delete a script from the server.",
                 minargs => 1,
-                proc    => sub { $sieve->delete(shift) },
+                proc    => sub { $sieve->delete(@_) },
                 args    => sub { complete_scripts( @_, $sieve ) },
             },
             "cat" => {
