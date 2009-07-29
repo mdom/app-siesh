@@ -2,20 +2,21 @@ package Net::ManageSieve::Siesh;
 
 use warnings;
 use strict;
+use autodie qw(:all);
 use File::Temp qw/tempfile/;
 use Net::ManageSieve;
 use IO::Prompt;
 use parent qw(Net::ManageSieve);
 
 sub starttls {
-        my $self = shift;
-        if ($self->debug()) {
-		eval { require IO::Socket::SSL;  IO::Socket::SSL->import qw(debug3); };
-		if ($@) {
-			die "Cannot load module IO::Socket::SSL\n";
-		}
-	}
-        $self->SUPER::starttls(@_);
+    my $self = shift;
+    if ( $self->debug() ) {
+        eval { require IO::Socket::SSL; IO::Socket::SSL->import qw(debug3); };
+        if ($@) {
+            die "Cannot load module IO::Socket::SSL\n";
+        }
+    }
+    $self->SUPER::starttls(@_);
 }
 
 sub movescript {
@@ -26,7 +27,7 @@ sub movescript {
     $self->deactivate() if $is_active;
 
     $self->copyscript( $source, $target );
-    $self->deletescript($source) ;
+    $self->deletescript($source);
 
     ## ... and activate the target later
     $self->setactive($target) if $is_active;
@@ -45,24 +46,25 @@ sub temp_scriptfile {
     if ( !$fh ) { $self->error($@); }
 
     my $content = '';
-    if ($self->script_exists($script)) {
+    if ( $self->script_exists($script) ) {
         $content = $self->getscript($script);
-    } elsif (!$create) {
-	die "Script $script does not exists.\n";
+    }
+    elsif ( !$create ) {
+        die "Script $script does not exists.\n";
     }
 
-    print {$fh} $content or die "$!\n";
+    print {$fh} $content;
     return $fh, $filename;
 }
 
 sub putfile {
     my ( $self, $file, $name ) = @_;
     my $script;
-    open( my $fh, '<', $file ) or die "$!\n";
+    open( my $fh, '<', $file );
     { $/ = undef, $script = <$fh> }
     close $fh;
     my $length = length $script;
-    $self->havespace($name, $length);
+    $self->havespace( $name, $length );
     $self->putscript( $name, $script );
 }
 
@@ -70,17 +72,17 @@ sub getfile {
     my ( $self, $name, $file ) = @_;
     my $script = $self->getscript($name);
     open( my $fh, '>', $file );
-    print {$fh} $script or die "$!\n";
+    print {$fh} $script;
     close $fh;
 }
 
 sub listscripts {
-    my ($self,$unactive) = @_;
+    my ( $self, $unactive ) = @_;
     my (@scripts);
     @scripts = @{ $self->SUPER::listscripts() };
     my $active = delete $scripts[-1];
     if ($unactive) {
-    	@scripts = grep { $_ ne $active } @scripts;
+        @scripts = grep { $_ ne $active } @scripts;
     }
     return @scripts;
 }
@@ -88,35 +90,40 @@ sub listscripts {
 sub delete {
     my $sieve = shift;
     for my $script (@_) {
-        $sieve->deletescript($script) or die $sieve->error() . "\n";
+        $sieve->deletescript($script);
     }
 }
 
 sub view_script {
-    my ($sieve,$script) = @_;
-    my ( $fh, $filename ) = $sieve->temp_scriptfile($script);
+    my ( $sieve, $script )   = @_;
+    my ( $fh,    $filename ) = $sieve->temp_scriptfile($script);
     unless ($fh) { die $sieve->error() . "\n" }
     my $pager = $ENV{'PAGER'} || "less";
-
     no warnings 'exec';
-    if ( system( $pager, $filename ) != 0 ) {
-	print "Error calling your pager application: $!\nUsing cat as fallback.\n\n";
-	$sieve->cat($script);
+    eval { system( $pager, $filename ) };
+    if ($@) {
+        print "Error calling your pager application: $!\nUsing cat as fallback.\n\n";
+        $sieve->cat($script);
     }
 }
 
 sub edit_script {
-    my ($sieve,$script) = @_;
+    my ( $sieve, $script ) = @_;
     my ( $fh, $filename ) = $sieve->temp_scriptfile( $script, 1 );
     my $editor = $ENV{'VISUAL'} || $ENV{'EDITOR'} || "vi";
-    do {
-        system( $editor, $filename ) == 0 or die "$!\n";
-      } until (
-        $sieve->putfile( $filename, $script )
-          || !do { print "$@\n"; prompt( "Re-edit script? ", -yn ) }
-      );
+    while (1) {
+        system( $editor, $filename );
+        eval { $sieve->putfile( $filename, $script ) };
+        if ($@) {
+            print "$@\n";
+            ## There was maybe a parse error, if the user enters yes
+            ## we reedit the file, otherwise we leave it by the next last
+            next if prompt( "Re-edit script? ", -yn );
+        }
+        ## There was either no error with putfile or the user entered no
+        last;
+    }
     close $fh;
-
 }
 
 sub activate {
