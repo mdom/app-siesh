@@ -61,7 +61,7 @@ sub putfile {
     my ( $self, $file, $name ) = @_;
     my $script;
     open( my $fh, '<', $file );
-    { $/ = undef, $script = <$fh> }
+    { local $/ = undef, $script = <$fh> }
     close $fh;
     my $length = length $script;
     $self->havespace( $name, $length );
