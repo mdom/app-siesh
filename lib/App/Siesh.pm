@@ -10,6 +10,35 @@ use App::Siesh::Batch;
 
 our $VERSION = '0.11';
 
+sub read_config {
+    my ($class,$file) = @_;
+
+    if (!$file) {
+	require Config::Find;
+	$file =  Config::Find->find( name => 'siesh' );
+    }
+    return {} if ! $file;
+
+    open my $in, $file or die $!;
+    my %config;
+    while (<$in>) {
+        next if /^\s*#/;
+        /^\s*(.*?)\s*=\s*(.*)\s*$/ or next;
+        my ( $k, $v ) = ( $1, $2 );
+        my @v;
+        if ( $v =~ /,/ ) {
+            $config{$k} = [ split /\s*,\s*/, $v ];
+        }
+        elsif ( $v =~ / / ) {    # XXX: Foo = "Bar baz"
+            $config{$k} = [ split /\s+/, $v ];
+        }
+        else {
+            $config{$k} = $v;
+        }
+    }
+    return \%config;
+}
+
 sub run {
     my ( $class, %config ) = @_;
 
@@ -50,12 +79,13 @@ sub run {
                 args   => sub { shift->help_args( undef, @_ ); },
                 method => sub { shift->help_call( undef, @_ ); },
             },
-            "put" => {
-                desc    => 'Upload a script onto the server.',
-                maxargs => 2,
-                minargs => 2,
+            "pus" => {
+                #desc    => 'Upload a script onto the server.',
+                #maxargs => 2,
+                #minargs => 2,
                 proc => sub { $sieve->putfile(@_) },
-                args => sub { shift->complete_files(@_); },
+                #proc => sub { $sieve->putscript("fu",'require ["fileinto", "reject"];') },
+                #args => sub { shift->complete_files(@_); },
             },
             "get" => {
                 desc    => "Fetch a script from the server and store locally.",
@@ -82,8 +112,7 @@ sub run {
             "activate" => {
                 desc    => "Mark a script as active.",
                 maxargs => 1,
-                proc    => sub { $sieve->setactive(shift) }
-                ,
+                proc    => sub { $sieve->setactive(shift) },
                 args => sub { complete_scripts( @_, $sieve ) },
             },
             "edit" => {

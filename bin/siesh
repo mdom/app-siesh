@@ -13,29 +13,6 @@ use IO::Interactive qw(is_interactive);
 use IO::Handle;
 use IO::File;
 
-sub equal_sep {
-    my $file = shift;
-    open my $in, $file or die $!;
-    my %config;
-    while (<$in>) {
-        next if /^\s*#/;
-        /^\s*(.*?)\s*=\s*(.*)\s*$/ or next;
-        my ( $k, $v ) = ( $1, $2 );
-        my @v;
-        if ( $v =~ /,/ ) {
-            $config{$k} = [ split /\s*,\s*/, $v ];
-        }
-        elsif ( $v =~ / / ) {    # XXX: Foo = "Bar baz"
-            $config{$k} = [ split /\s+/, $v ];
-        }
-        else {
-            $config{$k} = $v;
-        }
-    }
-    return \%config;
-}
-
-
 my (%config, %configfile, %commandline);
 
 my $result = GetOptions( \%commandline,
@@ -50,11 +27,7 @@ my $result = GetOptions( \%commandline,
     'config=s',
 ) or pod2usage(2);
 
-my $file = $commandline{'config'} ||  Config::Find->find;
-
-if ($file) {
-	%configfile = %{ equal_sep($file) };
-}
+%configfile = %{ App::Siesh->read_config($commandline{'config'}) };
 
 %config = ( %configfile, %commandline );
 

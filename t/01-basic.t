@@ -4,34 +4,14 @@ use warnings;
 use Test::More;
 use Net::ManageSieve::Siesh;
 use File::Temp qw(tempfile);
+use App::Siesh;
 
-my $configfile = 't/conf.pl';
 
-sub read_configfile {
-    my $configfile = shift;
-    my $config;
-    if ( !-f $configfile ) {
-        die "Need $configfile to test library\n";
-    }
-    unless ( $config = do $configfile, ) {
-        die "couldn't parse $configfile\n"         if $@;
-        die "couldn't compile $configfile\n"       if !defined $config;
-        die "$configfile should return hash ref\n" if !$config;
-    }
-    for my $key (qw(host password user)) {
-        if ( !defined( $config->{$key} ) ) {
-            die "$key not defined in $configfile\n";
-        }
-    }
-    return $config;
-}
-
-my $config = eval { read_configfile 't/conf.pl' };
-
-if ($@) {
-    plan skip_all => $@;
+if ( not $ENV{TEST_AUTHOR} ) {
+    plan skip_all => 'Author test.  Set $ENV{TEST_AUTHOR} to a true value to run.',
 }
 else {
+    my $config = App::Siesh->read_config();
 
     plan tests => 14;
 
