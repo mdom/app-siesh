@@ -7,11 +7,12 @@ use File::Temp qw(tempfile);
 use App::Siesh;
 
 
-if ( not $ENV{TEST_AUTHOR} ) {
-    plan skip_all => 'Author test.  Set $ENV{TEST_AUTHOR} to a true value to run.',
+if ( not -f 't/siesh.conf' ) {
+    plan skip_all => 'Author test. Only run if t/siesh.conf exists.',
+
 }
 else {
-    my $config = App::Siesh->read_config();
+    my $config = App::Siesh->read_config('t/siesh.conf');
 
     plan tests => 14;
 

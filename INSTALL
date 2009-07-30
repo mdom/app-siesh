@@ -7,15 +7,19 @@ To install this module, just do:
   ./Build test
   ./Build install  (this step may need to be done as the superuser)
 
-To run the test suite, please create a configfile t/conf.pl that return
-a hash ref with the hostname, the username and password as keys. For
-example:
+Testing App::Siesh
 
-{
-	host => 'imap',
-	user => 'dom',
-	password => 'xxx',
-}
+To run the test suite, please create a config file named t/siesh.conf. See
+the pod of bin/siesh for possible values.
+
+	host = imap
+	user = dom
+	password = xxx
 
 If this file does not exist, we just skip all tests that need a network
 connection.
+
+ALL SCRIPTS WILL BE DELETED WHEN TESTING SO DO *NOT* USE YOUR NORMAL
+ACCOUNT.
+
+REALLY!
