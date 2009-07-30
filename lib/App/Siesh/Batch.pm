@@ -1,5 +1,6 @@
 package App::Siesh::Batch;
 
+
 sub ReadLine { return __PACKAGE__ };
 
 sub new {
@@ -13,7 +14,8 @@ sub readline {
 	if ($fh->eof()) {
 		return "quit";
 	} else {
-		return $self->{handle}->getline;
+		chomp(my $line = $fh->getline());
+		return $line;
 	}
 }
 
