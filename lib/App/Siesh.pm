@@ -79,7 +79,7 @@ sub run {
                 args   => sub { shift->help_args( undef, @_ ); },
                 method => sub { shift->help_call( undef, @_ ); },
             },
-            "pus" => {
+            "put" => {
                 #desc    => 'Upload a script onto the server.',
                 #maxargs => 2,
                 #minargs => 2,
