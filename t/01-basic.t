@@ -13,7 +13,7 @@ if ( not -f 't/siesh.conf' ) {
 else {
     my $config = App::Siesh->read_config('t/siesh.conf');
 
-    plan tests => 17;
+    plan tests => 18;
 
     my ( $fh, $tempfile ) = tempfile( UNLINK => 1 );
     my $filter;
@@ -31,6 +31,8 @@ else {
     );
 
     ok( $sieve->login( $config->{user}, $config->{password} ), 'logging in' );
+
+    BAIL_OUT('Existing scripts would be deleted. Please use an empty account for testing.') if $sieve->listscripts();
 
     ok( $sieve->putfile( $tempfile, 'bar' ), 'uploading script' );
     ok( $sieve->script_exists('bar'), 'script was really uploaded' );
@@ -55,7 +57,7 @@ else {
     is(<$temp_fh>,"# This filter does nothing at all\n",'temp_scriptfile return filehandle of script');
     }
 
- #   ok( $sieve->deletescript('foo'), 'deleting foo' );
+    ok( $sieve->deletescript($sieve->listscripts()), 'deleting multiple scripts' );
 }
 
 __DATA__

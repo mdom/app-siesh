@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use App::Siesh;
 use IO::String;
-use Test::Output;
+use Test::Output qw(:tests stdout_from);
 use File::Temp qw(tempfile);
 
 
@@ -18,6 +18,10 @@ if ( not -f 't/siesh.conf' ) {
 }
 else {
 	plan tests => 9;
+
+	if ( stdout_from( sub { execute('ls') } ) ne "" ) {
+		BAIL_OUT('Existing scripts would be deleted. Please use an empty account for testing.')
+	}
 
 	my ($fh,$tempfile) = tempfile( UNLINK => 1 );
         print {$fh} <DATA>;
@@ -48,7 +52,7 @@ else {
 
 	stderr_like( sub { execute('cat quuz') },qr/NO/,'catting non-existing script fails');
 
-	$ENV{PAGER} = 'cat'; ## mpfh, this fails under windows
+	execute('rm *');
 
 }
 
