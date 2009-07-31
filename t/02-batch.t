@@ -4,6 +4,9 @@ use Test::More;
 use App::Siesh;
 use IO::String;
 use Test::Output;
+use File::Temp qw(tempfile);
+
+
 
 sub execute {
 	my $cmd = shift;
@@ -16,10 +19,14 @@ if ( not -f 't/siesh.conf' ) {
 else {
 	plan tests => 9;
 
+	my ($fh,$tempfile) = tempfile( UNLINK => 1 );
+        print {$fh} <DATA>;
+	close $fh;
+
 	execute('rm *');
 	stdout_is( sub { execute('ls') },'','rm * succeeded, no files left.');
 
-	execute('put t/filter.txt foo');
+	execute("put $tempfile foo" );
 	stdout_is( sub { execute('ls') },"foo\n",'foo was uploaded');
 
 	execute('cp foo bar');
@@ -44,3 +51,6 @@ else {
 	$ENV{PAGER} = 'cat'; ## mpfh, this fails under windows
 
 }
+
+__DATA__
+#
