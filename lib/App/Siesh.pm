@@ -70,14 +70,14 @@ sub run {
                 maxargs => 2,
                 minargs => 2,
                 proc => sub { $sieve->putfile(@_) },
-                args => sub { shift->complete_files(@_); },
+                args => sub { complete_file_and_script(@_, $sieve); },
             },
             "get" => {
                 desc    => "Fetch a script from the server and store locally.",
                 maxargs => 2,
                 minargs => 2,
                 proc    => sub { $sieve->getfile(@_) or die $sieve->error() . "\n" },
-                args    => sub { shift->complete_files(@_); },
+                args    => sub { complete_script_and_file(@_, $sieve); },
             },
             "quit" => {
                 desc    => "Quit siesh.",
@@ -169,13 +169,36 @@ sub run {
         },
     );
     
-
+    #$term->{debug_complete}=5;
     $term->{term}->ornaments(0);
     $term->run();
 }
 
+sub complete_script_and_file {
+    my ( $term, $cmp, $sieve ) = @_;
+    if ($cmp->{argno} == 0 ) {
+	my $scripts = complete_scripts($term,$cmp,$sieve) ;
+	if ( @{ $scripts } ) {
+		return $scripts;
+	} else {
+		return "No scripts to complete found.\n";
+	}
+    } elsif ($cmp->{argno} == 1 ) {
+	return $term->complete_files($cmp) 
+    }
+}
+
+sub complete_file_and_script {
+    my ( $term, $cmp, $sieve ) = @_;
+    if ($cmp->{argno} == 0 ) {
+	return $term->complete_files($cmp) 
+    } elsif ($cmp->{argno} == 1 ) {
+		return "No scripts to complete found.\n";
+    }
+}
+
 sub complete_scripts {
-    my ( $self, $cmp, $sieve ) = @_;
+    my ( $term, $cmp, $sieve ) = @_;
     return [ grep { index( $_, $cmp->{str} ) == 0 } $sieve->listscripts()  ];
 }
 
