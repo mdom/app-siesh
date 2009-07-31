@@ -17,25 +17,12 @@ sub read_config {
 	$file =  Config::Find->find( name => 'siesh' );
     }
     return {} if ! $file;
+    require Config::Tiny;
 
-    open my $in, $file or die $!;
-    my %config;
-    while (<$in>) {
-        next if /^\s*#/;
-        /^\s*(.*?)\s*=\s*(.*)\s*$/ or next;
-        my ( $k, $v ) = ( $1, $2 );
-        my @v;
-        if ( $v =~ /,/ ) {
-            $config{$k} = [ split /\s*,\s*/, $v ];
-        }
-        elsif ( $v =~ / / ) {    # XXX: Foo = "Bar baz"
-            $config{$k} = [ split /\s+/, $v ];
-        }
-        else {
-            $config{$k} = $v;
-        }
-    }
-    return \%config;
+    my $config = Config::Tiny->read($file);
+    die $config->errstr() if ! $config;
+
+    return $config->{_};
 }
 
 sub run {

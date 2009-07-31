@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'Net::ManageSieve'    => 0,
         'IO::Socket::SSL'     => 0,
         'Config::Find'        => 0,
+        'Config::Tiny'        => 0,
         'parent'              => 0,
         'Pod::Usage'          => 0,
         'IO::Interactive'     => 0,
