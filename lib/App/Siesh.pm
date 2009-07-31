@@ -66,12 +66,11 @@ sub run {
                 method => sub { shift->help_call( undef, @_ ); },
             },
             "put" => {
-                #desc    => 'Upload a script onto the server.',
-                #maxargs => 2,
-                #minargs => 2,
+                desc    => 'Upload a script onto the server.',
+                maxargs => 2,
+                minargs => 2,
                 proc => sub { $sieve->putfile(@_) },
-                #proc => sub { $sieve->putscript("fu",'require ["fileinto", "reject"];') },
-                #args => sub { shift->complete_files(@_); },
+                args => sub { shift->complete_files(@_); },
             },
             "get" => {
                 desc    => "Fetch a script from the server and store locally.",
