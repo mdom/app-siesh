@@ -5,7 +5,6 @@ use warnings;
 
 use Term::ShellUI;
 use Net::ManageSieve::Siesh;
-use File::Temp qw/tempfile/;
 use App::Siesh::Batch;
 
 our $VERSION = '0.11';
