@@ -20,7 +20,11 @@ my $builder = Module::Build->new(
         'IO::File'            => 0,
         'autodie'             => 0,
     },
-    build_requires     => { 'Test::More' => 0, },
+    build_requires => {
+        'Test::More'   => 0,
+        'IO::String'   => 0,
+        'Test::Output' => 0,
+    },
     create_makefile_pl => 'passthrough',
     create_readme      => 1,
     meta_merge =>

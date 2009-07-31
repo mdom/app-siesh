@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 use App::Siesh;
-use Data::Dumper;
 use IO::String;
 use Test::Output;
 
@@ -31,5 +30,3 @@ else {
 	execute('deactivate');
 	stdout_is( sub { execute('ls') },"bar\nquux\n",'moved foo to quux');
 }
-
-__DATA__
