@@ -14,7 +14,7 @@ if ( not -f 't/siesh.conf' ) {
     plan skip_all => 'Author test. Only run if t/siesh.conf exists.',
 }
 else {
-	plan tests => 7;
+	plan tests => 9;
 
 	execute('rm *');
 	stdout_is( sub { execute('ls') },'','rm * succeeded, no files left.');
@@ -36,4 +36,11 @@ else {
 
 	execute('deactivate');
 	stdout_is( sub { execute('ls') },"bar\nquux\n",'moved foo to quux');
+
+	stdout_is( sub { execute('cat quux') },"#\n",'catting quux');
+
+	stderr_like( sub { execute('cat quuz') },qr/NO/,'catting non-existing script fails');
+
+	$ENV{PAGER} = 'cat'; ## mpfh, this fails under windows
+
 }
