@@ -42,7 +42,7 @@ sub copyscript {
 
 sub temp_scriptfile {
     my ( $self, $script, $create ) = @_;
-    my ( $fh, $filename ) = tempfile( UNLINK => 1 );
+    my ( $fh, $filename ) = eval { tempfile( UNLINK => 1 ) };
     if ( !$fh ) { $self->error($@); }
 
     my $content = '';
@@ -54,6 +54,7 @@ sub temp_scriptfile {
     }
 
     print {$fh} $content;
+    seek $fh, 0, 0;
     return $fh, $filename;
 }
 
