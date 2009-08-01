@@ -1,10 +1,14 @@
 Build.PL
+Changes
 MANIFEST
 META.yml
-README
 Makefile.PL
+README
+INSTALL
 bin/siesh
 lib/App/Siesh.pm
+lib/App/Siesh/Batch.pm
 lib/Net/ManageSieve/Siesh.pm
 t/00-load.t
 t/01-basic.t
+t/02-batch.t
