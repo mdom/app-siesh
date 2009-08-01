@@ -27,6 +27,10 @@ my $builder = Module::Build->new(
         'IO::String'   => 0,
         'Test::Output' => 0,
     },
+    recommends => {
+	## To make the wold a better place
+	'Authen::SASL' => 0,
+    },
     create_makefile_pl => 'passthrough',
     create_readme      => 1,
     meta_merge =>
