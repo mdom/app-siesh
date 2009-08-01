@@ -250,8 +250,8 @@ Specifies the remote port to connect to. Defaults to C<2000>.
 
 =item tls
 
-Specifies whether TLS is required ("require") or optional
-("auto"). Defaults to unset, disabling TLS.
+Specifies whether TLS is required ("require"), optional
+("auto") or disables ("off"). Defaults to I<auto>.
 
 =item file
 
