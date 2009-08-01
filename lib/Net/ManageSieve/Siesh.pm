@@ -164,7 +164,7 @@ __END__
 
 =head1 NAME
 
-Net::ManageSieve::Siesh - Expanding ManagieSieve beyond the Protocol
+Net::ManageSieve::Siesh - Expanding Net::ManagieSieve beyond the pure protocol
 
 =head1 VERSION
 
