@@ -21,7 +21,6 @@ my $builder = Module::Build->new(
         'parent'              => 0,
         'Pod::Usage'          => 0,
         'Term::ShellUI'       => 0,
-
     },
     build_requires => {
         'Test::More'   => 0,
