@@ -25,7 +25,12 @@ my $result = GetOptions( \%commandline,
     'command=s@',
     'file=s',
     'config=s',
-) or pod2usage(2);
+    'help|?',
+    'man',
+) or pod2usage( -verbose => 0);
+
+pod2usage( -verbose => 0, -exitval => 0 ) if $commandline{'help'};
+pod2usage( -verbose => 2, -exitval => 0 ) if $commandline{'man'};
 
 %configfile = %{ App::Siesh->read_config($commandline{'config'}) };
 
@@ -78,13 +83,17 @@ siesh - interactive sieve shell
     --password PASSWORD
     --command COMMAND
     --file FILE
+    --config FILE
+    --help
+    --man
 
 =head1 DESCRIPTION
 
 Siesh provides a shell-like interface for manipulating sieve scripts
 using the ManageSieve protocol.
 
-See the L<App::Siesh> documentation for more details.
+The documentation for L<App::Siesh> provides more details on how
+to use this probram interactively.
 
 =head1 OPTIONS
 
@@ -132,6 +141,14 @@ are passed in via --file or STDIN.
 
 If specified, configuration options are read from this file instead
 of that returned by L<Config::Find>.
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=item B<--man>
+
+Prints the manual page and exits.
 
 =back
 
