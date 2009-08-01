@@ -2,3 +2,4 @@ blib/
 Build
 _build
 Build.bat
+t/siesh.conf
