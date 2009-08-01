@@ -7,7 +7,7 @@ use Term::ShellUI;
 use Net::ManageSieve::Siesh;
 use App::Siesh::Batch;
 
-our $VERSION = '0.11';
+our $VERSION = '0.20';
 
 sub read_config {
     my ($class,$file) = @_;

@@ -13,7 +13,8 @@ SYNOPSIS
 
 DESCRIPTION
     App::Siesh provides a shell-like interface for manipulating sieve
-    scripts using the ManageSieve protocol.
+    scripts using the ManageSieve protocol. If you search a command line
+    utility, take a look at siesh.
 
 OPTIONS
     debug
@@ -33,6 +34,10 @@ OPTIONS
     tls Specifies whether TLS is required ("require") or optional ("auto").
         Defaults to unset, disabling TLS.
 
+    file
+        If an IO::Handle object is provdided, App::Siesh won't read commands
+        from the command line prompt, but from that filehandle.
+
     password
         Specifies the password to login.
 
@@ -41,12 +46,15 @@ COMMANDS
         Prints a list of all scripts on the server. The currently active
         script, if any, is marked by a *** (astersik).
 
-        Synonyms: ls
+        Synonyms: ls, dir
 
     delete *script-name* *...*
-        Deletes a script. It's not possible to delete the currently active
-        script, so please use deactivate first. There's no way to undelete a
-        deleted script.
+        Deletes all listed scripts. It's not possible to delete the
+        currently active script, so please use deactivate first. There's no
+        way to undelete a deleted script.
+
+        If you specify *** (asterisk) as first argument to delete, the
+        active script is deactivated and all scripts are deleted.
 
         Synonyms: rm
 
@@ -60,25 +68,55 @@ COMMANDS
         If your script is syntactical incorrect, you will be prompted to
         re-edit the file or throw away your changes.
 
+        Synonyms: vi
+
+    copy *script-name* *script-name*
+        Copies the contents of the source script-name to a target script.
+        The contents of the target script are overridden.
+
+        Synonyms: cp
+
+    move *script-name* *script-name*
+        Moves script to a destination script. The destination script is
+        overridden.
+
+        Synonyms: mv
+
     activate *script-name*
         Activates the listed script. User may have multiple Sieve scripts on
         the server, yet only one script may be used for filtering of
         incoming messages. This is called the active script. Users may have
         zero or one active scripts
 
+        Synonyms: set
+
     deactivate
         Deactivate all scripts. Deactivation of all your scripts results in
         no filtering at all.
 
-    cat *script-name* *...*
-        Print scripts on the standard output.
+        Synonyms: unset
+
+    cat *script-name*
+        Print script on the standard output.
+
+        Synonyms: type
+
+    view *script-name*
+        Calls $ENV{PAGER} or "less" on script. In case of any error, we fall
+        back to use cat.
+
+        Synonyms: more
 
     quit
         Terminates the sessiion with the remote SIEVE server. An end of file
         will also terminate the session and exit.
 
+        Synonyms: q, logout
+
     help
         Print a short description of all commands.
+
+        Synonyms: h
 
     put *file-name* *script-name*
         Store a local file as script on the remote machine.

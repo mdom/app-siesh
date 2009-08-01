@@ -1,13 +1,15 @@
 Revision history for App-Siesh
 
-0.12	not yet released
+0.20	2009-08-01
 
-	new testing framwork
+	added first test to the distribution
 
         App::Siesh
 
 		falling back to cat in case view can't call PAGER
-		added batch support
+		added batch support (--command and --file)
+		added --help and --man
+		corrected wrong usage of pod2usage
 		new paramter --config to read options from another file
 		Documented "off" option for --tls
 		added ssl debugging
@@ -23,7 +25,6 @@ Revision history for App-Siesh
 		die in case of error
 		new function script_exists
 		using autodie
-		
 
 0.11	2009-07-23
 	added dependency on Pod::Usage
@@ -36,7 +37,6 @@ Revision history for App-Siesh
 	created App::Siesh
 	split documentation between App::Siesh und siesh
 	added new --password paramter
-
 
 0.08    2009-07-23
 	added --debug and --tls command line options (by Darian Anthony Patrick)
