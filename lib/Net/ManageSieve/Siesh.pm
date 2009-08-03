@@ -9,14 +9,14 @@ use IO::Prompt;
 use parent qw(Net::ManageSieve);
 
 sub starttls {
-    my $self = shift;
+    my ($self,@args) = @_;
     if ( $self->debug() ) {
         eval { require IO::Socket::SSL; IO::Socket::SSL->import qw(debug3); };
         if ($@) {
             die "Cannot load module IO::Socket::SSL\n";
         }
     }
-    $self->SUPER::starttls(@_);
+    $self->SUPER::starttls(@args);
 }
 
 sub movescript {
@@ -89,8 +89,8 @@ sub listscripts {
 }
 
 sub delete {
-    my $sieve = shift;
-    for my $script (@_) {
+    my ($sieve,@scripts) = @_;
+    for my $script (@scripts) {
         $sieve->deletescript($script);
     }
 }
