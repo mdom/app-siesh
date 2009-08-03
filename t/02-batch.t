@@ -10,7 +10,7 @@ use File::Temp qw(tempfile);
 
 sub execute {
 	my $cmd = shift;
-	App::Siesh->run(%{ App::Siesh->read_config('t/siesh.conf') }, file => IO::String->new( $cmd ) );
+	return App::Siesh->run(%{ App::Siesh->read_config('t/siesh.conf') }, file => IO::String->new( $cmd ) );
 }
 
 if ( not -f 't/siesh.conf' ) {
