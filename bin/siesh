@@ -40,7 +40,7 @@ if(!$config{password}) {
 	$config{password} = prompt( "Password: ", -e => '*' );
 }
 
-my ( $fh, $tempfile );
+my $fh;
 
 if ( !is_interactive(*STDIN) ) {
     $config{file} = IO::Handle->new_from_fd( *STDIN, 'r' );
