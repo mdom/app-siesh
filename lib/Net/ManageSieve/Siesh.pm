@@ -9,12 +9,16 @@ use IO::Prompt;
 use parent qw(Net::ManageSieve);
 
 sub starttls {
-    my ($self,@args) = @_;
+    my ( $self, @args ) = @_;
     if ( $self->debug() ) {
-        eval { require IO::Socket::SSL; IO::Socket::SSL->import qw(debug3); };
-        if ($@) {
+        eval {
+            require IO::Socket::SSL;
+            IO::Socket::SSL->import qw(debug3);
+            1;
+          }
+          or do {
             die "Cannot load module IO::Socket::SSL\n";
-        }
+          }
     }
     return $self->SUPER::starttls(@args);
 }
@@ -42,8 +46,8 @@ sub copyscript {
 
 sub temp_scriptfile {
     my ( $self, $script, $create ) = @_;
-    my ( $fh, $filename ) = eval { tempfile( UNLINK => 1 ) };
-    if ( !$fh ) { $self->error($@); }
+    my ( $fh, $filename );
+    eval { ( $fh, $filename ) = tempfile( UNLINK => 1 ); 1; } or do { die $@ };
 
     my $content = '';
     if ( $self->script_exists($script) ) {
@@ -102,11 +106,10 @@ sub view_script {
     unless ($fh) { die $sieve->error() . "\n" }
     my $pager = $ENV{'PAGER'} || "less";
     no warnings 'exec';
-    eval { system( $pager, $filename ) };
-    if ($@) {
+    eval { system( $pager, $filename ); 1; } or do {
         print "Error calling your pager application: $!\nUsing cat as fallback.\n\n";
         $sieve->cat($script);
-    }
+    };
    return 1;
 }
 
@@ -116,13 +119,12 @@ sub edit_script {
     my $editor = $ENV{'VISUAL'} || $ENV{'EDITOR'} || "vi";
     while (1) {
         system( $editor, $filename );
-        eval { $sieve->putfile( $filename, $script ) };
-        if ($@) {
+        eval { $sieve->putfile( $filename, $script ); 1; } or do {
             print "$@\n";
             ## There was maybe a parse error, if the user enters yes
             ## we reedit the file, otherwise we leave it by the next last
             next if prompt( "Re-edit script? ", -yn );
-        }
+        };
         ## There was either no error with putfile or the user entered no
         last;
     }
