@@ -88,10 +88,10 @@ sub listscripts {
     return @scripts;
 }
 
-sub delete {
+sub deletescript {
     my ($sieve,@scripts) = @_;
     for my $script (@scripts) {
-        $sieve->deletescript($script);
+        $sieve->SUPER::deletescript($script);
     }
     return 1;
 }
@@ -254,7 +254,7 @@ there is not active script.
 
 Check if $script exists on server.
 
-=item C<delete(@scripts)>
+=item C<deletescript(@scripts)>
 
 Delete all @scripts.
 

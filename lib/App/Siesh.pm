@@ -118,9 +118,9 @@ sub run {
                 proc    => sub { 
 			if ( $_[0] eq '*' ) {
 				$sieve->deactivate();
-				$sieve->delete($sieve->listscripts);
+				$sieve->deletescript($sieve->listscripts);
 			} else {
-				$sieve->delete(@_);
+				$sieve->deletescript(@_);
 			}
 		},
                 args    => sub { complete_scripts( @_, $sieve ) },
