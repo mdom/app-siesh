@@ -1,5 +1,7 @@
 package App::Siesh::Batch;
 
+use strict;
+use warnings;
 
 sub ReadLine { return __PACKAGE__ };
 
