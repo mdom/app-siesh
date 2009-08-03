@@ -171,7 +171,7 @@ sub run {
     
     #$term->{debug_complete}=5;
     $term->{term}->ornaments(0);
-    $term->run();
+    return $term->run();
 }
 
 sub complete_script_and_file {

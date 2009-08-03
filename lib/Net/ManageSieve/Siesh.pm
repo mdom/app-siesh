@@ -16,7 +16,7 @@ sub starttls {
             die "Cannot load module IO::Socket::SSL\n";
         }
     }
-    $self->SUPER::starttls(@args);
+    return $self->SUPER::starttls(@args);
 }
 
 sub movescript {
@@ -37,7 +37,7 @@ sub movescript {
 sub copyscript {
     my ( $self, $source, $target ) = @_;
     my $content = $self->getscript($source);
-    $self->putscript( $target, $content );
+    return $self->putscript( $target, $content );
 }
 
 sub temp_scriptfile {
@@ -66,7 +66,7 @@ sub putfile {
     close $fh;
     my $length = length $script;
     $self->havespace( $name, $length );
-    $self->putscript( $name, $script );
+    return $self->putscript( $name, $script );
 }
 
 sub getfile {
@@ -74,7 +74,7 @@ sub getfile {
     my $script = $self->getscript($name);
     open( my $fh, '>', $file );
     print {$fh} $script;
-    close $fh;
+    return close $fh;
 }
 
 sub listscripts {
@@ -93,6 +93,7 @@ sub delete {
     for my $script (@scripts) {
         $sieve->deletescript($script);
     }
+    return 1;
 }
 
 sub view_script {
@@ -106,6 +107,7 @@ sub view_script {
         print "Error calling your pager application: $!\nUsing cat as fallback.\n\n";
         $sieve->cat($script);
     }
+   return 1;
 }
 
 sub edit_script {
@@ -124,17 +126,17 @@ sub edit_script {
         ## There was either no error with putfile or the user entered no
         last;
     }
-    close $fh;
+    return close $fh;
 }
 
 sub activate {
     my ( $self, $script ) = @_;
-    $self->setactive($script);
+    return $self->setactive($script);
 }
 
 sub deactivate {
     my $self = shift;
-    $self->setactive("");
+    return $self->setactive("");
 }
 
 sub is_active {
