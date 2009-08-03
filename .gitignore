@@ -3,3 +3,5 @@ Build
 _build
 Build.bat
 t/siesh.conf
+Makefile
+cover_db
