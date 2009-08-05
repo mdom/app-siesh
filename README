@@ -31,8 +31,8 @@ OPTIONS
     port
         Specifies the remote port to connect to. Defaults to 2000.
 
-    tls Specifies whether TLS is required ("require") or optional ("auto").
-        Defaults to unset, disabling TLS.
+    tls Specifies whether TLS is required ("require"), optional ("auto") or
+        disables ("off"). Defaults to *auto*.
 
     file
         If an IO::Handle object is provdided, App::Siesh won't read commands

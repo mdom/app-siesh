@@ -28,6 +28,8 @@ build_requires:
   IO::String: 0
   Test::More: 0
   Test::Output: 0
+recommends:
+  Authen::SASL: 0
 provides:
   App::Siesh:
     file: lib/App/Siesh.pm
@@ -36,7 +38,7 @@ provides:
     file: lib/App/Siesh/Batch.pm
   Net::ManageSieve::Siesh:
     file: lib/Net/ManageSieve/Siesh.pm
-generated_by: Module::Build version 0.31012
+generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
