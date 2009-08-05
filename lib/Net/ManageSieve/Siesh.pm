@@ -157,11 +157,6 @@ sub script_exists {
     return defined( $script{$scriptname} );
 }
 
-sub _set_error {
-    my ( $self, $error ) = @_;
-    die $error . "\n";
-}
-
 1;    # End of Net::ManageSieve::Siesh
 
 __END__
