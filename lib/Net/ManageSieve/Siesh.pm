@@ -13,7 +13,7 @@ sub starttls {
     if ( $self->debug() ) {
         eval {
             require IO::Socket::SSL;
-            IO::Socket::SSL->import qw(debug3);
+            IO::Socket::SSL->import(qw/ debug3 /);
             1;
           }
           or do {
