@@ -28,7 +28,7 @@ else {
 
     ok(
         my $sieve =
-          Net::ManageSieve::Siesh->new( $config->{host}, tls => 'require' ),
+          Net::ManageSieve::Siesh->new( $config->{host}, Port => 4190, tls => 'require' ),
         'connecting to sieve server'
     );
 

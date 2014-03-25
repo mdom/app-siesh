@@ -32,6 +32,7 @@ sub run {
     $config{user} ||= $ENV{USER};
     $config{host} ||= 'imap';
     $config{tls}  ||= 'auto';
+    $config{port} ||= 4190;
 
     my @params;
 
@@ -215,7 +216,7 @@ App::Siesh - interactive sieve shell
 	    user  => 'dom',
 	    host  => 'imap',
 	    tls   => 'require',
-	    port  => '2000',
+	    port  => '4190',
 	    password => 'secret',
 	);
 
@@ -244,7 +245,7 @@ Specifies the machine to connect to. Defaults to C<imap>.
 
 =item port
 
-Specifies the remote port to connect to. Defaults to C<2000>.
+Specifies the remote port to connect to. Defaults to C<4190>.
 
 =item tls
 

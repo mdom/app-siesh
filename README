@@ -7,7 +7,7 @@ SYNOPSIS
                 user  => 'dom',
                 host  => 'imap',
                 tls   => 'require',
-                port  => '2000',
+                port  => '4190',
                 password => 'secret',
             );
 
@@ -29,7 +29,7 @@ OPTIONS
         Specifies the machine to connect to. Defaults to "imap".
 
     port
-        Specifies the remote port to connect to. Defaults to 2000.
+        Specifies the remote port to connect to. Defaults to 4190.
 
     tls Specifies whether TLS is required ("require"), optional ("auto") or
         disables ("off"). Defaults to *auto*.

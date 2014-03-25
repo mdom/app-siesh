@@ -112,7 +112,7 @@ Specifies the machine to connect to. Defaults to C<imap>.
 
 =item B<--port>|B<-p> PORT
 
-Specifies the remote port to connect to. Defaults to C<2000>.
+Specifies the remote port to connect to. Defaults to C<4190>.
 
 =item B<--tls>|B<-t> {require|auto|off}
 
@@ -159,7 +159,7 @@ set of lines with name and values seperated by an equal sign.
 
 	user     = mario
 	host     = sieve.example.com
-	port     = 2000
+	port     = 4190
 	tls      = require
 	debug    = 1
 	password = secret
